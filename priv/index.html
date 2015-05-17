@@ -4,10 +4,10 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>Chatterbox: HTTP/2 for Erlang</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+		<meta name="description" content="An Introduction to HTTP/2 and the code that implements it">
+		<meta name="author" content="Joe DeVivo">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -42,7 +42,7 @@
 				<section>
 					<h1>Take a Chance<br/>on HTTP</h1>
 					<h3>Chatterbox: HTTP/2 for Erlang</h3>
-					<img src="/img/crown.png" style="border:0px"/>
+					<img src="./img/crown.png" style="border:0px"/>
 					<p>
 						<small>Joe DeVivo / <a href="http://twitter.com/joedevivo">@joedevivo</a></small>
 					</p>
@@ -52,330 +52,410 @@
 				</section>
 
 				<section>
-					<h2>Hello There</h2>
-					<p>
-						reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
-					</p>
-				</section>
-
-				<!-- Example of nested vertical slides -->
-				<section>
-					<section>
-						<h2>Vertical Slides</h2>
-						<p>Slides can be nested inside of each other.</p>
-						<p>Use the <em>Space</em> key to navigate through all slides.</p>
-						<br>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section>
-						<h2>Basement Level 1</h2>
-						<p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
-					</section>
-					<section>
-						<h2>Basement Level 2</h2>
-						<p>That's it, time to go back up.</p>
-						<br>
-						<a href="#/2">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(180deg);">
-						</a>
-					</section>
-				</section>
-
-				<section>
-					<h2>Slides</h2>
-					<p>
-						Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
-					</p>
-				</section>
-
-				<section>
-					<h2>Point of View</h2>
-					<p>
-						Press <strong>ESC</strong> to enter the slide overview.
-					</p>
-					<p>
-						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
-				</section>
-
-				<section>
-					<h2>Touch Optimized</h2>
-					<p>
-						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
-					</p>
-				</section>
-
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						Write content using inline or external Markdown.
-						Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-
-						```
-						<section data-markdown>
-						  ## Markdown support
-
-						  Write content using inline or external Markdown.
-						  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
-				</section>
-
-				<section>
-					<section id="fragments">
-						<h2>Fragments</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment roll-in">roll-in</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=slide#/transitions">Slide</a> -
-						<a href="?transition=convex#/transitions">Convex</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						reveal.js comes with a few themes built in: <br>
-						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
-					</p>
-				</section>
-
-				<section>
-					<section data-background="#dddddd">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Tiled Backgrounds</h2>
-						<pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-					<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
-						<div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
-							<h2>Video Backgrounds</h2>
-							<pre><code style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
-						</div>
-					</section>
-				</section>
-
-				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
-					</p>
-					<pre><code>Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
-				</section>
-
-				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						You can override background transitions per-slide.
-					</p>
-					<pre><code style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
-				</section>
-
-				<section>
-					<h2>Pretty Code</h2>
-					<pre><code data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
-					</code></pre>
-					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-				</section>
-
-				<section>
-					<h2>Marvelous List</h2>
+					<h2>HTTP/0.9</h2>
+					<p>On the scene in 1991</p>
 					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
+						<li>Single Line Request: GET /&lt;path&gt;</li>
+						<li>Request ends on CRLF</li>
+						<li>Only responds with HTML ASCII</li>
+						<li>When that's done, Connection over</li>
+					</ul>
+					<aside class="notes">
+						I would have read the spec, but I was busy being 15 and not willing to pay the $5/mo my ISP wanted for "world wide web".
+						I had gopher included for free anyway!
+					</aside>
+				</section>
+
+				<section>
+					<p>HTTP/0.9 Is still out there!</p>
+					<p>tl;dr - ask for an HTML file and you'll get one</p>
+				</section>
+
+				<section>
+					<h2>HTTP/1.0</h2>
+					<p>
+						1996 - <a href="http://tools.ietf.org/html/rfc1945">RFC-1945: HTTP/1.0</a>
+					</p>
+					<p> New Features! </p>
+					<ul>
+						<li>HEADERS! Request and Response</li>
+						<li>Response Codes</li>
+						<li>Serves file types other than HTML</li>
+					</ul>
+
+				</section>
+				<section>
+					<h2>HTTP/1.0 Lifecycle</h2>
+					<ul>
+						<li>Request headers separated by CRLF</li>
+						<li>2x CRLF means request is done</li>
+						<li>Status Code as first line of response</li>
+						<li>Response headers separated by CRLF</li>
+						<li>Connection closed after every request</li>
+					</ul>
+
+					<aside class="notes">
+						This is the first really real spec. I'd written HTML by this point, which I guess means I've used HTTP/0.9
+						What, you didn't write HTML freshman year?
+					</aside>
+				</section>
+
+				<section>
+					<h2>HTTP/1.0</h2>
+					<p>It really wasn't a standard</p>
+					<aside class="notes">
+						Kind of a reverse spec of everything that was already happening. Supporting non-HTML files took the "HT" out of "HTTP"
+					</aside>
+				</section>
+
+				<section>
+					<h2>HTTP/1.1</h2>
+					<p>
+						1999 - <a href="http://tools.ietf.org/html/rfc2616">RFC-2616: HTTP/1.1</a>
+					</p>
+					<p>New Features</p>
+					<ul>
+						<li>Keepalive Connections</li>
+						<li>Chunked responses</li>
+						<li>Request Pipelining</li>
+						<li>Byte-Range Requests</li>
+						<li>Transfer Encodings</li>
+						<li>Close connection with 'Connection: close' header</li>
+						<li>Negotiation of: charsets, caching, language, encoding, and more</li>
+					</ul>
+
+					<aside class="notes">
+						Pipelining is not without it's problems
+					</aside>
+				</section>
+
+				<section>
+					<section>
+						<h2>HTTP/1.1 Lifecycle</h2>
+						<p>More Complex</p>
+					</section>
+					<section>
+						<h2>HTTP/1.1 Request</h2>
+						<ul>
+							<li>Still Plaintext</li>
+							<li>Still one header per line</li>
+							<li>Still 2x CRLF to terminate</li>
+						</ul>
+					</section>
+					<section>
+						<h2>HTTP/1.1 Response</h2>
+						<ul>
+							<li>Still starts with a response code</li>
+							<li>Still has one response header per line</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Possible Chuncked Response Data</h2>
+					</section>
+					<section>
+						<h2>Connection not closed!</h2>
+					</section>
+					<section>
+						<h2>HTTP/1.1 tl;dr</h2>
+						<ul>
+						<li>Request</li>
+						<li>Response</li>
+						<li>Repeat</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Side note on HTTP/1.0</h2>
+					<p>Keepalive connections were backported to HTTP/1.0, but it's disabled by defaul</p>
+				</section>
+
+				<section>
+					<section>
+						<h2>On HTTP/1.1's TCP Useage</h2>
+					</section>
+					<section>
+						<h2>It uses less connections because 'Keepalive'</h2>
+						<p>That's good!</p>
+					</section>
+					<section>
+						<h2>It sequentially sends requests and receives responses in order via Pipelining</h2>
+						<p>That's bad!</p>
+						<p>Well, sometimes. Be responsible</p>
+					</section>
+					<section>
+						<h2>Head of line Blocking</h2>
+						<ul>
+							<li>Pipelining lets you send another request before the first one responds</li>
+							<li>It will not respond until the first response is fully served</li>
+							<li>Most browsers disable pipelining by default</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Transfer Sizes</h2>
+					<h2>Dec/2010 - Apr/2015</h2>
+					<img src="./img/chart2.png"/>
+					<p>Transfer sizes and quantities are going UP!</p>
+				</section>
+
+				<section>
+					<h2>HTTP/1.1 Spec is HUGE</h2>
+					<p>In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages</p>
+				</section>
+
+				<section>
+					<h2>Many HTTP/1.1 Features are OPTIONAL</h2>
+					<p>Like Pipelining</p>
+					<p>Very rare to find a single product implementing the full feature set</p>
+					<aside class="notes">
+						that means a lot software talking to each other, that have different feature sets
+					</aside>
+				</section>
+
+				<section>
+					<h2>Performance Hacks</h2>
+					<ul>
+						<li>Spriting</li>
+						<li>Inlining</li>
+						<li>Concatenation</li>
+						<li>Sharding</li>
 					</ul>
 				</section>
 
 				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
+					<h2>SPDY</h2>
+					<p>Google tried to fix this and pretty much proved it could work</p>
 				</section>
 
 				<section>
-					<h2>Tabular Tables</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Item</th>
-								<th>Value</th>
-								<th>Quantity</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Apples</td>
-								<td>$1</td>
-								<td>7</td>
-							<tr>
-							<tr>
-								<td>Lemonade</td>
-								<td>$2</td>
-								<td>18</td>
-							<tr>
-							<tr>
-								<td>Bread</td>
-								<td>$3</td>
-								<td>2</td>
-							<tr>
-						</tbody>
-					</table>
+					<h2>s/SPDY\/3/http2 draft-00</h2>
+					<p>One day, the SPDY/3 draft became the HTTP/2 draft</p>
 				</section>
 
 				<section>
-					<h2>Clever Quotes</h2>
+					<h2>HTTP/2</h2>
 					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
+						2015 - <a href="http://tools.ietf.org/html/rfc7540">RFC 7540</a>
 					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
+
+					<ul>
+						<li>You can keep your semantics</li>
+						<li>Binary Protocol</li>
+						<li>Header Compression</li>
+						<li>Frames</li>
+						<li>Mulitplexing</li>
+						<li>Flow Control</li>
+						<li>Prioritization (Maybe?)</li>
+						<li>Server Push</li>
+						<li>Upgrading HTTP/1 requests</li>
+					</ul>
 				</section>
 
 				<section>
-					<h2>Intergalactic Interconnections</h2>
+					<h2>Keep your semantics</h2>
+					<ul>
+						<li>methods: GET, POST, and Friends</li>
+						<li>Headers!</li>
+						<li>Requests</li>
+						<li>Responses</li>
+						<li>if you did it before, it should still work</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Binary Protocol</h2>
+						<ul>
+							<li>Bye Bye Telnet</li>
+							<li>Bleep blorp</li>
+							<li>Binaries make the spec less ambigous</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Binaries =:= Happy Erlangers</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Header Compression</h2>
+						<ul>
+							<li>Stateless protocols are repetitive</li>
+							<li>HTTP is stateless</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Compression Context is Stateful</h2>
+						<p>
+							By having a stateful context for compression, you can send the same header 100 times over a connection, but after the first time the client and server will have agreed on a much smaller binary value.
+						</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Frames</h2>
+						<pre>
++-----------------------------------------------+
+|                 Length (24)                   |
++---------------+---------------+---------------+
+|   Type (8)    |   Flags (8)   |
++-+-------------+---------------+-------------------------------+
+|R|                 Stream Identifier (31)                      |
++=+=============================================================+
+|                   Frame Payload (0...)                      ...
++---------------------------------------------------------------+
+						</pre>
+					</section>
+					<section>
+						<h2>Type</h2>
+						<p>One of 10 frame types. Each has rules for payload sizes, payload content and which flags can be set.</p>
+					</section>
+					<section>
+						<h2>Flags</h2>
+						<p>A few control bits that have different uses for different frame types</p>
+					</section>
+					<section>
+						<h2>R</h2>
+						<p>A shoutout to pirates</p>
+					</section>
+					<section>
+						<h2>Stream Identifier</h2>
+						<p>Which multiplexed stream this frame is for</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Frame Types</h2>
+					</section>
+					<section>
+						<h2>DATA</h2>
+						<p>Request and Response Bodies are made of these</p>
+					</section>
+					<section>
+						<h2>HEADERS</h2>
+						<p>Request and Response Headers start with these</p>
+					</section>
+					<section>
+						<h2>PRIORITY</h2>
+						<p>Sent to change a stream's priority</p>
+					</section>
+					<section>
+						<h2>RST_STREAM</h2>
+						<p>Sent to give up on a stream</p>
+					</section>
+					<section>
+						<h2>SETTINGS</h2>
+						<p>Negotiates overall connection settings</p>
+					</section>
+					<section>
+						<h2>PUSH_PROMISE</h2>
+						<p>Headers for a response for which there was no request</p>
+					</section>
+					<section>
+						<h2>PING</h2>
+						<p>measuring round trip</p>
+					</section>
+					<section>
+						<h2>GOAWAY</h2>
+						<p>We're done here. Could be an error, could just be natual causes</p>
+					</section>
+					<section>
+						<h2>WINDOW_UPDATE</h2>
+						<p>Issues a credit for flow control</p>
+					</section>
+					<section>
+						<h2>CONTINUATION</h2>
+						<p>PUSH_PROMISE and HEADERS are the first frame of headers, but if they're too big to fit in one frame, the rest comes over in CONTINUATION frames. When a frame comes over with the END_HEADERS flag set, we know it's over</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Multiplexing: Pipelining done right</h2>
+						<p>A frame's stream identifier determines which multiplexed stream it belongs to</p>
+					</section>
+					<section>
+						<h2>Streams</h2>
+						<p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Upgrading HTTP1 Requests</h2>
+					</section>
+					<section>
+						<h2>https://</h2>
+						<p>Uses TLS's "Next Protocol Negotiation"</p>
+						<p>Or TLS's "Application Layer Protocol Negotiation"</p>
+					</section>
+					<section>
+						<h2>http://</h2>
+						<p>Uses "Upgrade: " header. HTTP/2 servers respond with status code </p>
+						<pre>101 Switching</pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>I'm the first in line</h2>
 					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
+						<img src="./img/http1con.png" style="border:none"/>
 					</p>
-				</section>
-
-				<section>
-					<h2>Speaker View</h2>
-					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
-					<p>Press the <em>S</em> key to try it out.</p>
-
 					<aside class="notes">
 						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
 					</aside>
 				</section>
 
 				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
-					<iframe src="//www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
+					<h2>If you need me let me know</h2>
+					<h2>Gonna be around</h2>
+					<p>
+						<img src="./img/http2con.png" style="border:none"/>
+					</p>
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
 				</section>
 
 				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the page background.
-					</p>
+					<section>
+						<h2>References</h2>
+					</section>
+					<section>
+						<h2>HTTP History References</h2>
+						<ul>
+							<li><a href="http://http2.github.io/faq/">HTTP/2 Official FAQ</a></li>
+							<li><a href="http://daniel.haxx.se/http2/">HTTP2 Explained - Daniel Stenberg</a></li>
+							<li><a href="http://chimera.labs.oreilly.com/books/1230000000545/ch09.html">High Performance Browser Networking  - Ilya Grigorik</a></li>
+						</ul>
+					</section>
+					<section>
+						<h2>HTTP/1.x RFCs</h2>
+						<ul>
+							<li><a href="http://tools.ietf.org/html/rfc1945">RFC 1945 - HTTP/1.0</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc2616">RFC 2616 - HTTP/1.1</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7230">RFC 7230 - HTTP/1.1: Message Syntax and Routing</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7231">RFC 7231 - HTTP/1.1: Semantics and Content</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7232">RFC 7232 - HTTP/1.1: Conditional Requests</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7233">RFC 7233 - HTTP/1.1: Range Requests</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7234">RFC 7234 - HTTP/1.1: Caching</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7235">RFC 7235 - HTTP/1.1: Authentication</a></li>
+						</ul>
+					</section>
+					<section>
+						<h2>HTTP/2 RFCs</h2>
+						<ul>
+							<li><a href="http://tools.ietf.org/html/rfc7540">RFC 7540 - HTTP/2</a></li>
+							<li><a href="http://tools.ietf.org/html/rfc7541">RFC 7541 - HPACK - Header Compression for HTTP/2</a></li>
+						</ul>
+					</section>
 				</section>
-
-				<section data-state="customevent">
-					<h2>State Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
-					</p>
-				</section>
-
-				<section>
-					<h2>Much more</h2>
-					<ul>
-						<li>Right-to-left support</li>
-						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
-					</ul>
-				</section>
-
-				<section style="text-align: left;">
-					<h1>THE END</h1>
-					<p>
-						- <a href="http://slides.com">Try the online editor</a> <br>
-						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
-					</p>
-				</section>
-
 			</div>
+
 
 		</div>
 
