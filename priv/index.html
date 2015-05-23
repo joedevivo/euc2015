@@ -120,7 +120,7 @@
         </section>
 
         <section>
-          <p>New Features</p>
+          <h2>New Features</h2>
           <ul>
             <li>Keepalive Connections</li>
             <li>Chunked Transfers</li>
@@ -322,9 +322,108 @@
             </ul>
           </section>
           <section>
+            <h2>HPACK - <a href="http://tools.ietf.org/html/rfc7541">RFC 7541</a></h2>
+            <p>A whole RFC just for header compression!</p>
+          </section>
+          <section>
             <h2>Compression Context is Stateful</h2>
             <p>
               By having a stateful context for compression, you can send the same header 100 times over a connection, but after the first time the client and server will have agreed on a much smaller binary value.
+            </p>
+          </section>
+          <section>
+            <h2>There Are Two Contexts</h2>
+            <p>One for each peer</p>
+            <p>Maybe easier to think of as one for the Request and one for the Response</p>
+          </section>
+          <section>
+            <h2>The Static Table</h2>
+<pre>
++-------+-----------------------------+---------------+
+| Index | Header Name                 | Header Value  |
++-------+-----------------------------+---------------+
+| 1     | :authority                  |               |
+| 2     | :method                     | GET           |
+| 3     | :method                     | POST          |
+| 4     | :path                       | /             |
+| 5     | :path                       | /index.html   |
+| 6     | :scheme                     | http          |
+| 7     | :scheme                     | https         |
+| 8     | :status                     | 200           |
+| 9     | :status                     | 204           |
+| 10    | :status                     | 206           |
+| 11    | :status                     | 304           |
+| 12    | :status                     | 400           |
+| 13    | :status                     | 404           |
+| 14    | :status                     | 500           |
+| 15    | accept-charset              |               |
+| 16    | accept-encoding             | gzip, deflate |
+                    ...
+</pre>
+            <aside class="notes">
+              These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
+              Sometimes there's no value, but the header name is what we're saving here, so 15+value is always "accept-charset"
+            </aside>
+          </section>
+          <section>
+            <ul>
+              <li>Indexes 1-61</li>
+              <li>Sometimes value, sometimes not</li>
+            </ul>
+          </section>
+          <section>
+            <h2>The Dynamic Table</h2>
+            <p>Indexes 62+</p>
+          </section>
+          <section>
+            <p>
+              Bounded by size in HTTP/2 connection settings as a security precaution
+            </p>
+          </section>
+          <section>
+            <h2>Huffman Encoding</h2>
+            <ul>
+              <li>Designed for HTTP</li>
+              <li>The more common the ASCII character, the fewer bytes it takes</li>
+            </ul>
+          </section>
+          <section>
+<pre>
+                                                        code
+                          code as bits                 as hex   len
+        sym              aligned to MSB                aligned   in
+                                                       to LSB   bits
+       (  0)  |11111111|11000                             1ff8  [13]
+       (  1)  |11111111|11111111|1011000                7fffd8  [23]
+       (  2)  |11111111|11111111|11111110|0010         fffffe2  [28]
+       (  3)  |11111111|11111111|11111110|0011         fffffe3  [28]
+       (  4)  |11111111|11111111|11111110|0100         fffffe4  [28]
+                               ...
+   '0' ( 48)  |00000                                         0  [ 5]
+   '1' ( 49)  |00001                                         1  [ 5]
+   '2' ( 50)  |00010                                         2  [ 5]
+   '3' ( 51)  |011001                                       19  [ 6]
+   '4' ( 52)  |011010                                       1a  [ 6]
+                               ...
+   'X' ( 88)  |11111100                                     fc  [ 8]
+   'Y' ( 89)  |1110011                                      73  [ 7]
+   'Z' ( 90)  |11111101                                     fd  [ 8]
+   '[' ( 91)  |11111111|11011                             1ffb  [13]
+   '\' ( 92)  |11111111|11111110|000                     7fff0  [19]
+   ']' ( 93)  |11111111|11100                             1ffc  [13]
+   '^' ( 94)  |11111111|111100                            3ffc  [14]
+   '_' ( 95)  |100010                                       22  [ 6]
+   '`' ( 96)  |11111111|1111101                           7ffd  [15]
+   'a' ( 97)  |00011                                         3  [ 5]
+   'b' ( 98)  |100011                                       23  [ 6]
+   'c' ( 99)  |00100                                         4  [ 5]
+   'd' (100)  |100100                                       24  [ 6]
+   'e' (101)  |00101                                         5  [ 5]
+</pre>
+          </section>
+          <section>
+            <p>
+              See?! Weird things like "non visualizable ASCII code 3" are 28 bits, but useful things like "1" are 5 bits. We're all about optimizing the wire
             </p>
           </section>
         </section>
