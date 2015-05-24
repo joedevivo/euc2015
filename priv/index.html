@@ -201,13 +201,6 @@
         </section>
 
         <section>
-          <h2>Transfer Sizes</h2>
-          <h2>Dec/2010 - Apr/2015</h2>
-          <img src="./img/chart2.png"/>
-          <p>Transfer sizes and quantities are going UP!</p>
-        </section>
-
-        <section>
           <h2>HTTP/1.1 Spec is HUGE</h2>
           <p>In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages</p>
         </section>
@@ -234,6 +227,13 @@
             Concatenation - Manually merging javascript files, so they're one file
             Sharding - Different files on different servers = more connections open
           </aside>
+        </section>
+
+        <section>
+          <h2>Transfer Sizes</h2>
+          <h2>Dec/2010 - Apr/2015</h2>
+          <img src="./img/chart2.png"/>
+          <p>Transfer sizes and quantities are going UP!</p>
         </section>
 
         <section>
@@ -266,8 +266,8 @@
             <li>You can keep your semantics</li>
             <li>Binary Protocol</li>
             <li>Header Compression</li>
-            <li>Frames</li>
             <li>Mulitplexing</li>
+            <li>Frames</li>
             <li>Flow Control</li>
             <li>Prioritization (Maybe?)</li>
             <li>Server Push</li>
@@ -275,6 +275,7 @@
           </ul>
         </section>
 
+        <!-- semantics -->
         <section>
           <section>
             <h2>Keep your semantics</h2>
@@ -299,6 +300,7 @@
           </section>
         </section>
 
+        <!-- binary -->
         <section>
           <section>
             <h2>Binary Protocol</h2>
@@ -313,6 +315,7 @@
           </section>
         </section>
 
+        <!-- hpack -->
         <section>
           <section>
             <h2>Header Compression</h2>
@@ -334,7 +337,7 @@
           <section>
             <h2>There Are Two Contexts</h2>
             <p>One for each peer</p>
-            <p>Maybe easier to think of as one for the Request and one for the Response</p>
+            <p>Maybe easier to think of as one for Requests and one for Responses</p>
           </section>
           <section>
             <h2>The Static Table</h2>
@@ -381,11 +384,85 @@
             </p>
           </section>
           <section>
+            <h2>How "H" Packs</h2>
+          </section>
+          <section>
+            <h2>Data Types</h2>
+            <ul>
+              <li>Numbers</li>
+              <li>Strings</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Indexed Header Field</h2>
+            <pre>
+  0   1   2   3   4   5   6   7
++---+---+---+---+---+---+---+---+
+| 1 |        Index (7+)         |
++---+---------------------------+
+            </pre>
+            <aside class="notes">
+              A Name/Value pair already in the table
+            </aside>
+          </section>
+
+          <section>
+            <h2>Literal Header Field w/ Index</h2>
+            <pre>
+  0   1   2   3   4   5   6   7
++---+---+---+---+---+---+---+---+
+| 0 | 1 |      Index (6+)       |
++---+---+-----------------------+
+| H |     Value Length (7+)     |
++---+---------------------------+
+| Value String (Length octets)  |
++-------------------------------+
+            </pre>
+            <aside class="notes">
+              A Name that's already in the table, but a different value
+            </aside>
+          </section>
+
+          <section>
+            <h2>Literal Header Field w/ Index</h2>
+            <pre>
+   0   1   2   3   4   5   6   7
+ +---+---+---+---+---+---+---+---+
+ | 0 | 1 |           0           |
+ +---+---+-----------------------+
+ | H |     Name Length (7+)      |
+ +---+---------------------------+
+ |  Name String (Length octets)  |
+ +---+---------------------------+
+ | H |     Value Length (7+)     |
+ +---+---------------------------+
+ | Value String (Length octets)  |
+ +-------------------------------+
+            </pre>
+            <aside class="notes">
+              Neither the name nor value are in the table
+            </aside>
+          </section>
+
+          <section>
+            <h2>Types of Literal Fields</h2>
+            <ul>
+              <li>with Indexing - added to the dynamic table</li>
+              <li>without Indexing - not added to the DT</li>
+              <li>never Indexed - never added to any DT</li>
+            </ul>
+            <aside class="notes">
+              All three are ways of saying the same thing, as far as "here's a header and value, but some are not compressed. "never" means no proxies can compress it either, while "without" applies to just one hop.
+            </aside>
+          </section>
+
+          <section>
             <h2>Huffman Encoding</h2>
             <ul>
               <li>Designed for HTTP</li>
               <li>The more common the ASCII character, the fewer bytes it takes</li>
             </ul>
+            <aside class="notes">Did you see that "H" bit?</aside>
           </section>
           <section>
 <pre>
@@ -426,8 +503,163 @@
               See?! Weird things like "non visualizable ASCII code 3" are 28 bits, but useful things like "1" are 5 bits. We're all about optimizing the wire
             </p>
           </section>
+          <section>
+            <h2>Examples</h2>
+            <p>
+              There are tons of cool examples in <a href="http://tools.ietf.org/html/rfc7541#appendix-C">HPACK: Appendix C</a>. They're so good that I turned them into <a href="https://github.com/joedevivo/chatterbox/blob/master/test/hpack_tests.erl#L60">EUnit tests</a>
+            </p>
+          </section>
         </section>
 
+        <!-- HPACK Example -->
+        <section>
+          <section>
+            <h2>HPACK Tables Example</h2>
+          </section>
+          <section>
+            <h2>Request 1</h2>
+            <pre>
+:path - "/"
+user-agent - "my cool browser"
+x-custom-header - "some custom value"
+            </pre>
+          </section>
+          <section>
+<pre>
+:path - "/"  - Index 4
+user-agent - "my cool browser" - Index 58, Literal Value "my cool browser"
+x-custom-header - "some custom value" - Non indexed "x-custom-header", "some custom value"
+</pre>
+          </section>
+          <section>
+            <h2>R1 Context updates</h2>
+            <ul>
+              <li>:path changes nothing</li>
+              <li>"user-agent"/"my cool browser" is now Index 62</li>
+              <li>"x-custom-header"/"some custom value" is now Index 62
+              <li>"user-agent"/"my cool browser" is +1'd to 63</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Request 2</h2>
+            <pre>
+:path - "/some_file.html"
+user-agent - "my cool browser"
+x-custom-header - "some custom value"
+            </pre>
+          </section>
+          <section>
+<pre>
+:path - "/some_file.html"  - Index 4, Literal Value "/some_file.html"
+user-agent - "my cool browser" - Index 63
+x-custom-header - "some custom value" - Index 62
+</pre>
+          </section>
+          <section>
+            <h2>R2: Context updates</h2>
+            <ul>
+              <li>":path"/"/some_file.html" is the new Index 62</li>
+              <li>"x-custom-header"/"some custom value" is +1'd 63</li>
+              <li>"user-agent"/"my cool browser" is +1'd to 64</li>
+            </ul>
+            <aside class="notes">
+              Basically an MRU cache. LRU headers fall off the end of the table
+            </aside>
+          </section>
+          <section>
+            <h2>Request 3</h2>
+            <pre>
+:path - "/some_file.html"
+user-agent - "my cool browser"
+x-custom-header - "new value"
+            </pre>
+          </section>
+          <section>
+<pre>
+:path - "/some_file.html"  - Index 62
+user-agent - "my cool browser" - Index 64
+x-custom-header - "new value" - Index 63, Literal Value "new value"
+</pre>
+          </section>
+          <section>
+            <h2>R: Context updates</h2>
+            <ul>
+              <li>"x-custom-header"/"new value" is the new 62</li>
+              <li>":path"/"/some_file.html" is +1'd to 63</li>
+              <li>"user-agent"/"my cool browser" is +1'd to 64</li>
+              <li>"x-custom-header"/"some custom value" is +1'd 65</li>
+            </ul>
+            <aside="notes">
+              when the sum of the sizes of name/value pairs exceedes the maximum table size, that last header falls off the end. bye!
+            </aside>
+          </section>
+        </section>
+
+        <!-- Multiplexing -->
+        <section>
+          <section>
+            <h2>Multiplexing: Pipelining done right</h2>
+          </section>
+          <section>
+            <h2>Streams</h2>
+            <p>There's one connection, streams are logical abstractions across it</p>
+          </section>
+          <section>
+            <h2>Frames</h2>
+            <p>A frame's stream identifier determines which multiplexed stream it belongs to</p>
+          </section>
+          <section>
+            <h2>One Stream Id</h2>
+            <h2>per frame</h2>
+            <p>A series of frames for each stream id is reconstructed on the other side, in the order they arrive</p>
+          </section>
+          <section>
+            <h2>Order?</h2>
+            <p>Yes, because the header context is a piece of state, all those HPACK indexes would get out of sync if the client and server processed things in a different order</p>
+          </section>
+          <section>
+            <h2>Handling</h2>
+            <p>There are rules in the spec about how many can be "active" at a time, and what types of frames can be received when</p>
+          </section>
+          <section>
+            <pre>
+                             +--------+
+                     send PP |        | recv PP
+                    ,--------|  idle  |--------.
+                   /         |        |         \
+                  v          +--------+          v
+           +----------+          |           +----------+
+           |          |          | send H /  |          |
+    ,------| reserved |          | recv H    | reserved |------.
+    |      | (local)  |          |           | (remote) |      |
+    |      +----------+          v           +----------+      |
+    |          |             +--------+             |          |
+    |          |     recv ES |        | send ES     |          |
+    |   send H |     ,-------|  open  |-------.     | recv H   |
+    |          |    /        |        |        \    |          |
+    |          v   v         +--------+         v   v          |
+    |      +----------+          |           +----------+      |
+    |      |   half   |          |           |   half   |      |
+    |      |  closed  |          | send R /  |  closed  |      |
+    |      | (remote) |          | recv R    | (local)  |      |
+    |      +----------+          |           +----------+      |
+    |           |                |                 |           |
+    |           | send ES /      |       recv ES / |           |
+    |           | send R /       v        send R / |           |
+    |           | recv R     +--------+   recv R   |           |
+    | send R /  `----------->|        |&lt;-----------'  send R / |
+    | recv R                 | closed |               recv R   |
+    `----------------------->|        |&lt;----------------------'
+                             +--------+
+            </pre>
+          <aside class="notes">
+            Don't get your hopes up to high. I got excited too when I thought it was an FSM at first
+          </aside>
+          </section>
+        </section>
+
+        <!-- Frames -->
         <section>
           <section>
             <h2>Frames</h2>
@@ -507,64 +739,6 @@
           </section>
         </section>
 
-        <section>
-          <section>
-            <h2>Multiplexing: Pipelining done right</h2>
-            <p>A frame's stream identifier determines which multiplexed stream it belongs to</p>
-          </section>
-          <section>
-            <h2>Streams</h2>
-            <p>There's one connection, streams are logical abstractions across it</p>
-          </section>
-          <section>
-            <h2>One Stream Id</h2>
-            <h2>per frame</h2>
-            <p>A series of frames for each stream id is reconstructed on the other side, in the order they arrive</p>
-          </section>
-          <section>
-            <h2>Order?</h2>
-            <p>Yes, because the header context is a piece of state</p>
-          </section>
-          <section>
-            <h2>Handling</h2>
-            <p>There are rules in the spec about how many can be "active" at a time, and what types of frames can be received </p>
-          </section>
-          <section>
-            <pre>
-                             +--------+
-                     send PP |        | recv PP
-                    ,--------|  idle  |--------.
-                   /         |        |         \
-                  v          +--------+          v
-           +----------+          |           +----------+
-           |          |          | send H /  |          |
-    ,------| reserved |          | recv H    | reserved |------.
-    |      | (local)  |          |           | (remote) |      |
-    |      +----------+          v           +----------+      |
-    |          |             +--------+             |          |
-    |          |     recv ES |        | send ES     |          |
-    |   send H |     ,-------|  open  |-------.     | recv H   |
-    |          |    /        |        |        \    |          |
-    |          v   v         +--------+         v   v          |
-    |      +----------+          |           +----------+      |
-    |      |   half   |          |           |   half   |      |
-    |      |  closed  |          | send R /  |  closed  |      |
-    |      | (remote) |          | recv R    | (local)  |      |
-    |      +----------+          |           +----------+      |
-    |           |                |                 |           |
-    |           | send ES /      |       recv ES / |           |
-    |           | send R /       v        send R / |           |
-    |           | recv R     +--------+   recv R   |           |
-    | send R /  `----------->|        |&lt;-----------'  send R / |
-    | recv R                 | closed |               recv R   |
-    `----------------------->|        |&lt;----------------------'
-                             +--------+
-            </pre>
-          <aside class="notes">
-            Don't get your hopes up to high. I got excited too when I thought it was an FSM at first
-          </aside>
-          </section>
-        </section>
 
         <section>
           <section>
@@ -609,6 +783,9 @@
           <p>It is built in a tree structure so you can create requests for stream dependencies.</p>
           <p>Leaves in a tree can have different weights</p>
           <h4>A server is under no obligation to honor these requests</h4>
+          <aside class="notes">
+            So I punted on it for V1; however, we didn't spawn each stream into it's own gen_fsm explicity so we could have control over priority in a future version.
+          </aside>
         </section>
 
         <section>
@@ -622,6 +799,9 @@
             <h2>Static Content</h2>
             <p>Imagine inspecting HTML on the way out, and sending pushes for all the CSS, JavaScript, and Images you need.</p>
             <p>Is this exciting for APIs? <b>Maybe!</b></p>
+            <aside class="notes">
+              If your API has common use cases, you could push expected responses. e.g. you just did GET /shoppingcart, and you might usually see a GET /item for each item in the cart after that. While currently you might just return all that info in GET /shoppingcart, you might also take advantage of PP. You might not. This might be dumb.
+            </aside>
           </section>
         </section>
 
@@ -643,24 +823,64 @@
         </section>
 
         <section>
-          <h2>I'm the first in line</h2>
-          <p>
-            <img src="./img/http1con.png" style="border:none"/>
-          </p>
-          <aside class="notes">
-            Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-          </aside>
+          <h2>OMG Can I See Some Erlang Already?!</h2>
+          <aside class="notes">Understanding the protocol is the hardest part. Anyone can pattern match :D</aside>
         </section>
 
         <section>
-          <h2>If you need me let me know</h2>
-          <h2>Gonna be around</h2>
-          <p>
-            <img src="./img/http2con.png" style="border:none"/>
-          </p>
-          <aside class="notes">
-            Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-          </aside>
+          <h2>Chatterbox</h2>
+          <p><a href="http://github.com/joedevivo/chatterbox">Chatterbox</a></p>
+        </section>
+
+        <section>
+          <section>
+            <h2>Development</h2>
+          </section>
+          <section>
+            <h2>Minimum Viable Response: NGHTTP2</h2>
+          </section>
+          <section>
+            <h2>Firefox 37</h2>
+          </section>
+          <section>
+            <h2>When Things Go Wrong</h2>
+            <p>Building a client that breaks the rules</p>
+          </section>
+          <section>
+            <h2>http2c APIs</h2>
+            <ul>
+              <li>High Level - Request/Response</li>
+              <li>Mid Level - HTTP/2 Frames</li>
+              <li>Low Level - Binary</li>
+            </ul>
+          </section>
+          <section>
+            <p>I needed a client that could break the rules, so I could test that the server breaks properly</p>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+Frames = [
+            {#frame_header{length=8,type=?HEADERS,stream_id=3},
+             #headers{ block_fragment=H1 }},
+            {#frame_header{length=8,type=?CONTINUATION,stream_id=3},
+             #continuation{block_fragment=H2}},
+            %% not allowed!
+            {#frame_header{length=8,type=?HEADERS,stream_id=3},
+             #headers{block_fragment=H1}},
+            {#frame_header{
+              length=8,type=?CONTINUATION,
+              flags=?FLAG_END_HEADERS,
+              stream_id=3
+              },
+             #continuation{block_fragment=H3}}
+],
+http2c:send_unaltered_frames(Client, Frames),
+</code></pre>
+          </section>
+
+
+
+
         </section>
 
         <section>
