@@ -37,77 +37,83 @@
     <div class="reveal">
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
-  <section>
-    <h1>Take a Chance<br/>on HTTP</h1>
-    <h3>Chatterbox: HTTP/2 for Erlang</h3>
-    <img src="./img/crown.png" style="border:0px"/>
-    <p>
-      <small>Joe DeVivo / <a href="http://twitter.com/joedevivo">@joedevivo</a></small>
-    </p>
-    <center>
-      <div style="height: 3px; width:100px; background: #b89c30; align: center;"></div>
-    </center>
-  </section>
-
-  <section>
-    <h2>A (Hopefully) Breif History of HTTP</h2>
-  </section>
-
-  <section>
-    <h2>HTTP/0.9</h2>
-    <p>On the scene in 1991</p>
-    <ul>
-      <li>Single Line Request: GET /&lt;path&gt;</li>
-      <li>Request ends on CRLF</li>
-      <li>Only responds with HTML ASCII</li>
-            <li>When that's done, Connection over</li>
-          </ul>
-          <aside class="notes">
-            I would have read the spec, but I was busy being 15 and not willing to pay the $5/mo my ISP wanted for "world wide web".
-            I had gopher included for free anyway!
-          </aside>
-        </section>
-
         <section>
-          <p>HTTP/0.9 Is still out there!</p>
-          <p>tl;dr - ask for an HTML file and you'll get one</p>
-        </section>
-
-        <section>
-          <h2>HTTP/1.0</h2>
+          <h1>Take a Chance<br/>on HTTP</h1>
+          <h3>Chatterbox: HTTP/2 for Erlang</h3>
+          <img src="./img/crown.png" style="border:0px"/>
           <p>
-            1996 - <a href="http://tools.ietf.org/html/rfc1945">RFC-1945: HTTP/1.0</a>
+            <small>Joe DeVivo / <a href="http://twitter.com/joedevivo">@joedevivo</a></small>
           </p>
-          <p> New Features! </p>
-          <ul>
-            <li>HEADERS! Request and Response</li>
-            <li>Response Codes</li>
-            <li>Serves file types other than HTML</li>
-          </ul>
+          <center>
+            <div style="height: 3px; width:100px; background: #b89c30; align: center;"></div>
+          </center>
         </section>
 
         <section>
-          <h2>HTTP/1.0 Lifecycle</h2>
-          <ul>
-            <li>Request headers separated by CRLF</li>
-            <li>2x CRLF means request is done</li>
-            <li>Status Code as first line of response</li>
-            <li>Response headers separated by CRLF</li>
-            <li>Connection closed after every request</li>
-          </ul>
-
-          <aside class="notes">
-            This is the first really real spec. I'd written HTML by this point, which I guess means I've used HTTP/0.9
-            What, you didn't write HTML freshman year?
-          </aside>
+          <h2>A (Hopefully) Breif History of HTTP</h2>
         </section>
 
+        <!-- HTTP/0.9 -->
         <section>
-          <h2>HTTP/1.0</h2>
-          <p>It really wasn't a standard</p>
-          <aside class="notes">
-            Kind of a reverse spec of everything that was already happening. Supporting non-HTML files took the "HT" out of "HTTP"
-          </aside>
+          <section>
+            <h2>HTTP/0.9</h2>
+            <p>On the scene in 1991</p>
+            <ul>
+              <li>Single Line Request: GET /&lt;path&gt;</li>
+              <li>Request ends on CRLF</li>
+              <li>Only responds with HTML ASCII</li>
+              <li>When that's done, Connection over</li>
+            </ul>
+            <aside class="notes">
+              I would have read the spec, but I was busy being 15 and not willing to pay the $5/mo my ISP wanted for "world wide web".
+              I had gopher included for free anyway!
+            </aside>
+          </section>
+
+          <section>
+            <p>HTTP/0.9 Is still out there!</p>
+            <p>tl;dr - ask for an HTML file and you'll get one</p>
+          </section>
+        </section>
+
+        <!-- HTTP/1.0 -->
+        <section>
+          <section>
+            <h2>HTTP/1.0</h2>
+            <p>
+              1996 - <a href="http://tools.ietf.org/html/rfc1945">RFC-1945: HTTP/1.0</a>
+            </p>
+            <p> New Features! </p>
+            <ul>
+              <li>HEADERS! Request and Response</li>
+              <li>Response Codes</li>
+              <li>Serves file types other than HTML</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>HTTP/1.0 Lifecycle</h2>
+            <ul>
+              <li>Request headers separated by CRLF</li>
+              <li>2x CRLF means request is done</li>
+              <li>Status Code as first line of response</li>
+              <li>Response headers separated by CRLF</li>
+              <li>Connection closed after every request</li>
+            </ul>
+
+            <aside class="notes">
+              This is the first really real spec. I'd written HTML by this point, which I guess means I've used HTTP/0.9
+              What, you didn't write HTML freshman year?
+            </aside>
+          </section>
+
+          <section>
+            <h2>HTTP/1.0</h2>
+            <p>It really wasn't a standard</p>
+            <aside class="notes">
+              Kind of a reverse spec of everything that was already happening. Supporting non-HTML files took the "HT" out of "HTTP"
+            </aside>
+          </section>
         </section>
 
         <section>
@@ -341,27 +347,54 @@
           </section>
           <section>
             <h2>The Static Table</h2>
+            <!--table>
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Header Name</th>
+                  <th>Header Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1 </td><td>:authority     </td><td>             </td></tr>
+                <tr><td>2 </td><td>:method        </td><td>GET          </td></tr>
+                <tr><td>3 </td><td>:method        </td><td>POST         </td></tr>
+                <tr><td>4 </td><td>:path          </td><td>/            </td></tr>
+                <tr><td>5 </td><td>:path          </td><td>/index.html  </td></tr>
+                <tr><td>6 </td><td>:scheme        </td><td>http         </td></tr>
+                <tr><td>7 </td><td>:scheme        </td><td>https        </td></tr>
+                <tr><td>8 </td><td>:status        </td><td>200          </td></tr>
+                <tr><td>9 </td><td>:status        </td><td>204          </td></tr>
+                <tr><td>10</td><td>:status        </td><td>206          </td></tr>
+                <tr><td>11</td><td>:status        </td><td>304          </td></tr>
+                <tr><td>12</td><td>:status        </td><td>400          </td></tr>
+                <tr><td>13</td><td>:status        </td><td>404          </td></tr>
+                <tr><td>14</td><td>:status        </td><td>500          </td></tr>
+                <tr><td>15</td><td>accept-charset </td><td>             </td></tr>
+                <tr><td>16</td><td>accept-encoding</td><td>gzip, deflate</td></tr>
+              </tbody>
+            </table-->
 <pre>
-+-------+-----------------------------+---------------+
-| Index | Header Name                 | Header Value  |
-+-------+-----------------------------+---------------+
-| 1     | :authority                  |               |
-| 2     | :method                     | GET           |
-| 3     | :method                     | POST          |
-| 4     | :path                       | /             |
-| 5     | :path                       | /index.html   |
-| 6     | :scheme                     | http          |
-| 7     | :scheme                     | https         |
-| 8     | :status                     | 200           |
-| 9     | :status                     | 204           |
-| 10    | :status                     | 206           |
-| 11    | :status                     | 304           |
-| 12    | :status                     | 400           |
-| 13    | :status                     | 404           |
-| 14    | :status                     | 500           |
-| 15    | accept-charset              |               |
-| 16    | accept-encoding             | gzip, deflate |
-                    ...
+            +-------+--------------------+---------------+
+            | Index | Header Name        | Header Value  |
+            +-------+--------------------+---------------+
+            | 1     | :authority         |               |
+            | 2     | :method            | GET           |
+            | 3     | :method            | POST          |
+            | 4     | :path              | /             |
+            | 5     | :path              | /index.html   |
+            | 6     | :scheme            | http          |
+            | 7     | :scheme            | https         |
+            | 8     | :status            | 200           |
+            | 9     | :status            | 204           |
+            | 10    | :status            | 206           |
+            | 11    | :status            | 304           |
+            | 12    | :status            | 400           |
+            | 13    | :status            | 404           |
+            | 14    | :status            | 500           |
+            | 15    | accept-charset     |               |
+            | 16    | accept-encoding    | gzip, deflate |
+                                ...
 </pre>
             <aside class="notes">
               These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
@@ -396,10 +429,10 @@
           <section>
             <h2>Indexed Header Field</h2>
             <pre>
-  0   1   2   3   4   5   6   7
-+---+---+---+---+---+---+---+---+
-| 1 |        Index (7+)         |
-+---+---------------------------+
+                   0   1   2   3   4   5   6   7
+                 +---+---+---+---+---+---+---+---+
+                 | 1 |        Index (7+)         |
+                 +---+---------------------------+
             </pre>
             <aside class="notes">
               A Name/Value pair already in the table
@@ -409,14 +442,14 @@
           <section>
             <h2>Literal Header Field w/ Index</h2>
             <pre>
-  0   1   2   3   4   5   6   7
-+---+---+---+---+---+---+---+---+
-| 0 | 1 |      Index (6+)       |
-+---+---+-----------------------+
-| H |     Value Length (7+)     |
-+---+---------------------------+
-| Value String (Length octets)  |
-+-------------------------------+
+                   0   1   2   3   4   5   6   7
+                 +---+---+---+---+---+---+---+---+
+                 | 0 | 1 |      Index (6+)       |
+                 +---+---+-----------------------+
+                 | H |     Value Length (7+)     |
+                 +---+---------------------------+
+                 | Value String (Length octets)  |
+                 +-------------------------------+
             </pre>
             <aside class="notes">
               A Name that's already in the table, but a different value
@@ -426,18 +459,18 @@
           <section>
             <h2>Literal Header Field w/ Index</h2>
             <pre>
-   0   1   2   3   4   5   6   7
- +---+---+---+---+---+---+---+---+
- | 0 | 1 |           0           |
- +---+---+-----------------------+
- | H |     Name Length (7+)      |
- +---+---------------------------+
- |  Name String (Length octets)  |
- +---+---------------------------+
- | H |     Value Length (7+)     |
- +---+---------------------------+
- | Value String (Length octets)  |
- +-------------------------------+
+                   0   1   2   3   4   5   6   7
+                 +---+---+---+---+---+---+---+---+
+                 | 0 | 1 |           0           |
+                 +---+---+-----------------------+
+                 | H |     Name Length (7+)      |
+                 +---+---------------------------+
+                 |  Name String (Length octets)  |
+                 +---+---------------------------+
+                 | H |     Value Length (7+)     |
+                 +---+---------------------------+
+                 | Value String (Length octets)  |
+                 +-------------------------------+
             </pre>
             <aside class="notes">
               Neither the name nor value are in the table
@@ -526,9 +559,12 @@ x-custom-header - "some custom value"
           </section>
           <section>
 <pre>
-:path - "/"  - Index 4
-user-agent - "my cool browser" - Index 58, Literal Value "my cool browser"
-x-custom-header - "some custom value" - Non indexed "x-custom-header", "some custom value"
+:path - "/"
+    - Index 4
+user-agent - "my cool browser"
+    - Index 58, Literal Value "my cool browser"
+x-custom-header - "some custom value"
+     - Non indexed "x-custom-header", "some custom value"
 </pre>
           </section>
           <section>
@@ -551,9 +587,12 @@ x-custom-header - "some custom value"
           </section>
           <section>
 <pre>
-:path - "/some_file.html"  - Index 4, Literal Value "/some_file.html"
-user-agent - "my cool browser" - Index 63
-x-custom-header - "some custom value" - Index 62
+:path - "/some_file.html"
+  - Index 4, Literal Value "/some_file.html"
+user-agent - "my cool browser"
+  - Index 63
+x-custom-header - "some custom value"
+  - Index 62
 </pre>
           </section>
           <section>
@@ -577,13 +616,16 @@ x-custom-header - "new value"
           </section>
           <section>
 <pre>
-:path - "/some_file.html"  - Index 62
-user-agent - "my cool browser" - Index 64
-x-custom-header - "new value" - Index 63, Literal Value "new value"
+:path - "/some_file.html"
+  - Index 62
+user-agent - "my cool browser"
+  - Index 64
+x-custom-header - "new value"
+  - Index 63, Literal Value "new value"
 </pre>
           </section>
           <section>
-            <h2>R: Context updates</h2>
+            <h2>R3: Context updates</h2>
             <ul>
               <li>"x-custom-header"/"new value" is the new 62</li>
               <li>":path"/"/some_file.html" is +1'd to 63</li>
@@ -664,15 +706,15 @@ x-custom-header - "new value" - Index 63, Literal Value "new value"
           <section>
             <h2>Frames</h2>
             <pre>
-+-----------------------------------------------+
-|                 Length (24)                   |
-+---------------+---------------+---------------+
-|   Type (8)    |   Flags (8)   |
-+-+-------------+---------------+-------------------------------+
-|R|                 Stream Identifier (31)                      |
-+=+=============================================================+
-|                   Frame Payload (0...)                      ...
-+---------------------------------------------------------------+
+    +-----------------------------------------------+
+    |                 Length (24)                   |
+    +---------------+---------------+---------------+
+    |   Type (8)    |   Flags (8)   |
+    +-+-------------+---------------+-------------------------------+
+    |R|                 Stream Identifier (31)                      |
+    +=+=============================================================+
+    |                   Frame Payload (0...)                      ...
+    +---------------------------------------------------------------+
             </pre>
           </section>
           <section>
@@ -832,15 +874,194 @@ x-custom-header - "new value" - Index 63, Literal Value "new value"
           <p><a href="http://github.com/joedevivo/chatterbox">Chatterbox</a></p>
         </section>
 
+
+        <section>
+          <h2>Chatterbox FSM</h2>
+          <h4>A Connection State Machine</h4>
+        </section>
+        <section>
+          <section>
+            <h2>SETTINGS</h2>
+            <ul>
+              <li>SETTINGS_HEADER_TABLE_SIZE</li>
+              <li>SETTINGS_ENABLE_PUSH</li>
+              <li>SETTINGS_MAX_CONCURRENT_STREAMS</li>
+              <li>SETTINGS_INITIAL_WINDOW_SIZE</li>
+              <li>SETTINGS_MAX_FRAME_SIZE</li>
+              <li>SETTINGS_MAX_HEADER_LIST_SIZE</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>RFC 7540 - <a href="http://tools.ietf.org/html/rfc7540#section-3.5">Section 3.5</a></h2>
+            <pre>
+The client connection preface starts with a sequence of 24 octets,
+which in hex notation is:
+     0x505249202a20485454502f322e300d0a0d0a534d0d0a0d0a
+That is, the connection preface starts with the string
+     "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n"
+This sequence MUST be followed by a SETTINGS frame
+(Section 6.5), which MAY be empty.
+            </pre>
+          </section>
+
+          <section>
+            <h2>RFC 7540 - <a href="http://tools.ietf.org/html/rfc7540#section-3.5">Section 3.5</a></h2>
+            <pre>
+The server connection preface consists of a potentially empty
+SETTINGS frame (Section 6.5) that MUST be the first frame the server
+sends in the HTTP/2 connection.
+
+The SETTINGS frames received from a peer as part of the connection
+preface MUST be acknowledged (see Section 6.5.3) after sending the
+connection preface.
+            </pre>
+          </section>
+          <section>
+            <h2>RFC 7540 - <a href="http://tools.ietf.org/html/rfc7540#section-6.5.3">Section 6.5.3</a></h2>
+            <pre>
+Once all values have been processed, the
+recipient MUST immediately emit a SETTINGS frame with the ACK flag
+set.  Upon receiving a SETTINGS frame with the ACK flag set, the
+sender of the altered parameters can rely on the setting having been
+applied.
+If the sender of a SETTINGS frame does not receive an acknowledgement
+within a reasonable amount of time, it MAY issue a connection error
+(Section 5.4.1) of type SETTINGS_TIMEOUT.
+            </pre>
+          </section>
+          <section>
+            <h2>RFC 7540 - <a href="http://tools.ietf.org/html/rfc7540#section-4">Section 4</a></h2>
+            <pre>
+Once the HTTP/2 connection is established, endpoints can begin
+exchanging frames.
+            </pre>
+            <aside class="notes">Pity party: see how many sections and out of order things I had to find for this piece of flow?</aside>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+-define(PREAMBLE, "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n").
+
+handle_info({_, _Socket, &lt;&lt;?PREAMBLE,Bin/bits&gt;&gt;}, _, S) ->
+    lager:debug("handle_info HTTP/2 Preamble!"),
+    gen_fsm:send_event(self(), {start_frame,Bin}),
+    {next_state, settings_handshake, S};
+</code></pre>
+          </section>
+
+          <section>
+            <h2>Settings Handshake State</h2>
+          </section>
+
+          <section>
+            <h2>What it does it</h2>
+            <ol>
+              <li>Send our server SETTINGS frame</li>
+              <li>Wait for client SETTINGS frame</li>
+              <li>and client's SETTINGS ACK</li>
+              <li>Backlog any frames before 2 and 3 are done</li>
+              <li>Transition to connected state</li>
+            </ol>
+          </section>
+
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+settings_handshake({start_frame, Bin}, S=#chatterbox_fsm_state{...}) ->
+    NewState = case Bin of
+        <<>> ->
+            S;
+        _ ->
+            OtherFrames = http2_frame:from_binary(Bin),
+            {SettingsBacklog, FB} = lists:partition(
+                fun({X,_}) -> X#frame_header.type =:= ?SETTINGS end,
+                OtherFrames),
+            S#chatterbox_fsm_state{frame_backlog=FB, settings_backlog=SettingsBacklog}
+    end,
+
+    %% Assemble our settings and send them
+    http2_frame_settings:send(Socket, ServerSettings),
+
+    %% There should be two SETTINGS frames sitting on the wire
+    %% now. The ACK to the one we just sent and the value of the
+    %% client settings. We're pretty sure that the first one will be
+    %% the Client Settings as it was probably on the wire before we
+    %% even sent the Server Settings, but can we ever really be sure
+
+    %% What we know from the HTTP/2 spec is that we shouldn't process
+    %% any other frame types until SETTINGS have been exchanged. So,
+    %% if something else comes in, let's store them in a backlog until
+    %% we can deal with them
+
+    settings_handshake_loop(NewState, {false, false}).
+
+settings_handshake_loop(State=#chatterbox_fsm_state{frame_backlog=FB}, {true, true}) ->
+    gen_fsm:send_event(self(), backlog),
+    {next_state, connected, State#chatterbox_fsm_state{frame_backlog=lists:reverse(FB)}};
+settings_handshake_loop(State = #chatterbox_fsm_state{
+                                   settings_backlog=[{H,P}|T]
+                                  },
+                        Acc) ->
+    lager:debug("[settings_handshake] Backlogged Frame"),
+    settings_handshake_loop({H#frame_header.type, ?IS_FLAG(H#frame_header.flags, ?FLAG_ACK)},
+                            {H, P},
+                            Acc,
+                            State#chatterbox_fsm_state{settings_backlog=T});
+settings_handshake_loop(State = #chatterbox_fsm_state{
+                                   connection=#connection_state{
+                                                 socket=Socket
+                                                },
+                                   settings_backlog=[]
+                                  },
+                        Acc) ->
+    lager:debug("[settings_handshake] Incoming Frame"),
+    {H, Payload} = http2_frame:read(Socket),
+    settings_handshake_loop(
+      {H#frame_header.type,?IS_FLAG(H#frame_header.flags, ?FLAG_ACK)},
+      {H, Payload},
+      Acc,
+      State).
+
+settings_handshake_loop({?SETTINGS,false},{_Header,CSettings}, {ReceivedAck,false},
+                        State = #chatterbox_fsm_state{connection=C=#connection_state{socket=S}}) ->
+    ClientSettings = http2_frame_settings:overlay(#settings{}, CSettings),
+    lager:debug(
+      "[settings_handshake] got client_settings: ~p",
+      [http2_frame_settings:format(ClientSettings)]),
+    http2_frame_settings:ack(S),
+    settings_handshake_loop(
+      State#chatterbox_fsm_state{
+        connection=C#connection_state{
+                     send_settings=ClientSettings
+                    }
+       },
+      {ReceivedAck,true}
+     );
+settings_handshake_loop({?SETTINGS,true},{_,_},{false,ReceivedClientSettings},State) ->
+    lager:debug("[settings_handshake] got server_settings ack"),
+    settings_handshake_loop(State,{true,ReceivedClientSettings});
+settings_handshake_loop(_,FrameToBacklog,Acc,State=#chatterbox_fsm_state{frame_backlog=FB}) ->
+    lager:debug("[settings_handshake] got rando frame"),
+    settings_handshake_loop(State#chatterbox_fsm_state{frame_backlog=[FrameToBacklog|FB]}, Acc).
+
+</code></pre>
+          </section>
+
+          <section>
+            <h2>Connected State</h2>
+          </section>
+        </section>
+
         <section>
           <section>
             <h2>Development</h2>
           </section>
           <section>
             <h2>Minimum Viable Response: NGHTTP2</h2>
+            <p>No content handler, just a hard coded response</p>
           </section>
           <section>
             <h2>Firefox 37</h2>
+            <p>This Slide Deck!</p>
           </section>
           <section>
             <h2>When Things Go Wrong</h2>
@@ -858,26 +1079,91 @@ x-custom-header - "new value" - Index 63, Literal Value "new value"
             <p>I needed a client that could break the rules, so I could test that the server breaks properly</p>
           </section>
           <section>
+            <p>RFC 7540 <a href="http://tools.ietf.org/html/rfc7540#section-4.3">Section 4.3</a></p>
+<pre>
+Each header block is processed as a discrete unit.  Header blocks
+MUST be transmitted as a contiguous sequence of frames, with no
+interleaved frames of any other type or from any other stream.  The
+last frame in a sequence of HEADERS or CONTINUATION frames has the
+END_HEADERS flag set.  The last frame in a sequence of PUSH_PROMISE
+or CONTINUATION frames has the END_HEADERS flag set.  This allows a
+header block to be logically equivalent to a single frame.
+</pre>
+            <p>RFC 7540 <a href="http://tools.ietf.org/html/rfc7540#section-6.2">Section 6.2</a></p>
+<pre>
+END_HEADERS (0x4):  When set, bit 2 indicates that this frame
+  contains an entire header block (Section 4.3) and is not followed
+  by any CONTINUATION frames.
+
+  A HEADERS frame without the END_HEADERS flag set MUST be followed
+  by a CONTINUATION frame for the same stream.  A receiver MUST
+  treat the receipt of any other type of frame or a frame on a
+  different stream as a connection error (Section 5.4.1) of type
+  PROTOCOL_ERROR.
+</pre>
+          </section>
+          <section>
 <pre><code data-trim contenteditable class="erlang">
 Frames = [
-            {#frame_header{length=8,type=?HEADERS,stream_id=3},
-             #headers{ block_fragment=H1 }},
-            {#frame_header{length=8,type=?CONTINUATION,stream_id=3},
-             #continuation{block_fragment=H2}},
-            %% not allowed!
-            {#frame_header{length=8,type=?HEADERS,stream_id=3},
-             #headers{block_fragment=H1}},
-            {#frame_header{
-              length=8,type=?CONTINUATION,
-              flags=?FLAG_END_HEADERS,
-              stream_id=3
-              },
-             #continuation{block_fragment=H3}}
+   {#frame_header{length=8,type=?HEADERS,stream_id=3},
+    #headers{ block_fragment=H1 }},
+   {#frame_header{length=8,type=?CONTINUATION,stream_id=3},
+    #continuation{block_fragment=H2}},
+   %% not allowed!
+   {#frame_header{length=8,type=?HEADERS,stream_id=3},
+    #headers{block_fragment=H1}},
+   {#frame_header{
+     length=8,type=?CONTINUATION,
+     flags=?FLAG_END_HEADERS,
+     stream_id=3
+     },
+    #continuation{block_fragment=H3}}
 ],
 http2c:send_unaltered_frames(Client, Frames),
 </code></pre>
           </section>
 
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+%% No response on stream 3
+Resp = http2c:get_frames(Client, 3),
+?assertEqual(0, length(Resp)),
+
+%% One GOAWAY frame on stream 0
+Resp2 = http2c:get_frames(Client, 0),
+1 = length(Resp2),
+
+%% Protocol Error
+[{_GoAwayH, GoAway}] = Resp2,
+?PROTOCOL_ERROR = GoAway#goaway.error_code,
+</code></pre>
+          </section>
+
+          <section>
+            <h2>chatterbox_fsm: continuation state</h2>
+            <ul>
+              <li>Any time a HEADERS frame is received, enter CONTINUATION state</li>
+              <li>In that state, only accept CONTINUATION frames from that stream</li>
+              <li>when a CONTINUATION with the END HEADERS flag is set, transition back to 'connected'</li>
+              <li>If any other frame type comes in (or CONTINUATION with other stream id), send GOAWAY with CONNECTION ERROR</li>
+            </ul>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+continuation(start_frame, #chatterbox_fsm_state{}) ->
+    Frame = {FH,_} = http2_frame:read(Socket),
+    Response = case FH#frame_header.type of
+       ?CONTINUATION ->
+           route_frame(Frame, S);
+       _ ->
+           go_error(?PROTOCOL_ERROR, S)
+    end,
+    gen_fsm:send_event(self(), start_frame),
+    Response;
+continuation(_, State) ->
+    go_error(?PROTOCOL_ERROR, State).
+</code></pre>
+          </section>
 
 
 
@@ -915,6 +1201,10 @@ http2c:send_unaltered_frames(Client, Frames),
               <li><a href="http://tools.ietf.org/html/rfc7541">RFC 7541 - HPACK - Header Compression for HTTP/2</a></li>
             </ul>
           </section>
+        </section>
+
+        <section>
+          <h2>THANKS!</h2>
         </section>
       </div>
 
