@@ -154,6 +154,7 @@
               <li>Still one header per line</li>
               <li>Still 2x CRLF to terminate</li>
             </ul>
+            <h4>Possible Chuncked Data</h4>
           </section>
           <section>
             <h2>HTTP/1.1 Response</h2>
@@ -161,9 +162,7 @@
               <li>Still starts with a response code</li>
               <li>Still has one response header per line</li>
             </ul>
-          </section>
-          <section>
-            <h2>Possible Chuncked Response Data</h2>
+            <h4>Possible Chuncked Data</h4>
           </section>
           <section>
             <h2>Connection not closed!</h2>
@@ -180,7 +179,7 @@
 
         <section>
           <h2>Side note on HTTP/1.0</h2>
-          <p>Keepalive connections were backported to HTTP/1.0, but it's disabled by defaul</p>
+          <p>Keepalive connections were backported to HTTP/1.0, but it's disabled by default</p>
         </section>
 
         <section>
@@ -245,7 +244,7 @@
         <section>
           <h2>Goals of an HTTP Update</h2>
           <ul>
-            <li>Less RTT Sensitivity</li>
+            <li>Less round trip time Sensitivity</li>
             <li>Fix pipelining</li>
             <li>Discourage multiple connections</li>
             <li>Keep existing semantics</li>
@@ -342,7 +341,7 @@
           </section>
           <section>
             <h2>There Are Two Contexts</h2>
-            <p>One for each peer</p>
+            <p>Two for each peer</p>
             <p>Maybe easier to think of as one for Requests and one for Responses</p>
           </section>
           <section>
@@ -788,6 +787,10 @@ x-custom-header - "new value"
           </section>
 
           <section>
+            <h2>Only Applies to Data Frames</h2>
+          </section>
+
+          <section>
             <h2>Receiver</h2>
             <p>Each receiver advertizes how many bytes it can receive</p>
           </section>
@@ -812,11 +815,6 @@ x-custom-header - "new value"
             <p>Stream 0 is the meta stream. Frames sent to it apply to the entire connection</p>
             <p>Some frame types (e.g. Data) can't be sent to stream 0.</p>
           </section>
-
-          <section>
-            <h2>Only Applies to Data Frames</h2>
-          </section>
-
         </section>
 
         <section>
@@ -890,6 +888,9 @@ x-custom-header - "new value"
               <li>SETTINGS_MAX_FRAME_SIZE</li>
               <li>SETTINGS_MAX_HEADER_LIST_SIZE</li>
             </ul>
+            <aside class="notes">
+              TODO: What are these?
+            </aside>
           </section>
 
           <section>
@@ -980,20 +981,13 @@ settings_handshake({start_frame, Bin}, S=#chatterbox_fsm_state{...}) ->
 
     %% Assemble our settings and send them
     http2_frame_settings:send(Socket, ServerSettings),
-
-    %% There should be two SETTINGS frames sitting on the wire
-    %% now. The ACK to the one we just sent and the value of the
-    %% client settings. We're pretty sure that the first one will be
-    %% the Client Settings as it was probably on the wire before we
-    %% even sent the Server Settings, but can we ever really be sure
-
-    %% What we know from the HTTP/2 spec is that we shouldn't process
-    %% any other frame types until SETTINGS have been exchanged. So,
-    %% if something else comes in, let's store them in a backlog until
-    %% we can deal with them
-
     settings_handshake_loop(NewState, {false, false}).
+</code></pre>
+            <aside class="notes">When we start, read all the frames we can and split them into ?SETTINGS and other</aside>
+          </section>
 
+          <section>
+<pre><code data-trim contenteditable class="erlang">
 settings_handshake_loop(State=#chatterbox_fsm_state{frame_backlog=FB}, {true, true}) ->
     gen_fsm:send_event(self(), backlog),
     {next_state, connected, State#chatterbox_fsm_state{frame_backlog=lists:reverse(FB)}};
@@ -1020,7 +1014,12 @@ settings_handshake_loop(State = #chatterbox_fsm_state{
       {H, Payload},
       Acc,
       State).
+</code></pre>
+            <aside class="notes">This here is just to read frames off the backlog (from before we sent our settings frame) in case the client settings already came in, otherwise it starts reading frames off the socket</aside>
+          </section>
 
+          <section>
+<pre><code data-trim contenteditable class="erlang">
 settings_handshake_loop({?SETTINGS,false},{_Header,CSettings}, {ReceivedAck,false},
                         State = #chatterbox_fsm_state{connection=C=#connection_state{socket=S}}) ->
     ClientSettings = http2_frame_settings:overlay(#settings{}, CSettings),
@@ -1042,8 +1041,8 @@ settings_handshake_loop({?SETTINGS,true},{_,_},{false,ReceivedClientSettings},St
 settings_handshake_loop(_,FrameToBacklog,Acc,State=#chatterbox_fsm_state{frame_backlog=FB}) ->
     lager:debug("[settings_handshake] got rando frame"),
     settings_handshake_loop(State#chatterbox_fsm_state{frame_backlog=[FrameToBacklog|FB]}, Acc).
-
 </code></pre>
+            <aside class="notes">And here we check for settings frame with client settings, settings frame with ACK or other</aside>
           </section>
 
           <section>
@@ -1164,10 +1163,184 @@ continuation(_, State) ->
     go_error(?PROTOCOL_ERROR, State).
 </code></pre>
           </section>
+        </section>
 
+        <section>
+          <section>
+            <h2>FRAMES</h2>
+          </section>
+          <section>
+            <h2>http2_frame</h2>
+<pre><code data-trim contenteditable class="erlang">
+-callback read_binary(Bin::binary(),
+                      Header::frame_header()) -&gt;
+    {ok, payload(), Remainder::binary()} | {error, term()}.
+-callback to_binary(payload()) -&gt; iodata().
+</code></pre>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+-spec from_binary(binary()) -&gt; [{frame_header(), payload()}].
+from_binary(Bin) -&gt;
+    from_binary(Bin, []).
 
+from_binary(&lt;&lt;&gt;&gt;, Acc) -&gt;
+    Acc;
+from_binary(Bin, Acc) -&gt;
+    {Header, PayloadBin} = read_binary_frame_header(Bin),
+    {ok, Payload, Rem} = read_binary_payload(PayloadBin, Header),
+    lager:debug(format({Header, Payload})),
+    from_binary(Rem, [{Header, Payload}|Acc]).
+</code></pre>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+-spec read_binary_frame_header(binary()) -&gt; {frame_header(), binary()}.
+read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/bits&gt;&gt;) -&gt;
+    Header = #frame_header{
+        length = Length,
+        type = Type,
+        flags = Flags,
+        stream_id = StreamId
+    },
+    {Header, Rem}.
+</code></pre>
+            <aside class="notes">So easy!</aside>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+-spec read_binary_payload(binary(), frame_header()) -&gt;
+    {ok, payload(), binary()} | {error, term()}.
+read_binary_payload(Bin, Header = #frame_header{type=?DATA}) -&gt;
+    http2_frame_data:read_binary(Bin, Header);
+read_binary_payload(Socket, Header = #frame_header{type=?HEADERS}) -&gt;
+    http2_frame_headers:read_binary(Socket, Header);
+%% etc...
+</code></pre>
+            <aside class="notes"></aside>
+          </section>
+          <section>
+            <h2>chatterbox_fsm</h2>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+-spec route_frame(frame(), #chatterbox_fsm_state{}) -&gt;
+    {next_state, connected, #chatterbox_fsm_state{}}.
+</code></pre>
+          </section>
+          <section>
+            <h2>FRAME_SIZE_ERROR</h2>
+          </section>
+          <section>
+            <h4>connection level processing</h4>
+<pre><code data-trim contenteditable class="erlang">
+route_frame({#frame_header{length=L}, _},
+            S = #chatterbox_fsm_state{
+                   connection=#connection_state{
+                                 recv_settings=#settings{max_frame_size=MFS}
+                                }})
+    when L &gt; MFS -&gt;
+    go_error(?FRAME_SIZE_ERROR, S);
+</code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>STREAMS</h2>
+          </section>
+          <section>
+            <h2>http2_stream</h2>
+            <p>A Faux State Machine</p>
+          </section>
+          <section>
+            <pre>
+                             +--------+
+                     send PP |        | recv PP
+                    ,--------|  idle  |--------.
+                   /         |        |         \
+                  v          +--------+          v
+           +----------+          |           +----------+
+           |          |          | send H /  |          |
+    ,------| reserved |          | recv H    | reserved |------.
+    |      | (local)  |          |           | (remote) |      |
+    |      +----------+          v           +----------+      |
+    |          |             +--------+             |          |
+    |          |     recv ES |        | send ES     |          |
+    |   send H |     ,-------|  open  |-------.     | recv H   |
+    |          |    /        |        |        \    |          |
+    |          v   v         +--------+         v   v          |
+    |      +----------+          |           +----------+      |
+    |      |   half   |          |           |   half   |      |
+    |      |  closed  |          | send R /  |  closed  |      |
+    |      | (remote) |          | recv R    | (local)  |      |
+    |      +----------+          |           +----------+      |
+    |           |                |                 |           |
+    |           | send ES /      |       recv ES / |           |
+    |           | send R /       v        send R / |           |
+    |           | recv R     +--------+   recv R   |           |
+    | send R /  `----------->|        |&lt;-----------'  send R / |
+    | recv R                 | closed |               recv R   |
+    `----------------------->|        |&lt;----------------------'
+                             +--------+
+            </pre>
+          </section>
+          <section>
+            <h2>Stream State</h2>
+<pre><code data-trim contenteditable class="erlang">
+-record(stream_state, {
+  stream_id = undefined :: stream_id(),
+  state = idle :: stream_state_name(),
+  send_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
+  recv_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
+  queued_frames = [] :: [frame()],
+  incoming_frames = [] :: [frame()]
+}).
+</code></pre>
+          </section>
+
+          <section>
+            <h2>Stream Transitions</h2>
+<pre><code data-trim contenteditable class="erlang">
+-spec recv_frame(frame(), stream_state()) -> stream_state().
+</code></pre>
+          </section>
+
+          <section>
+            <h2>Stream Transitions</h2>
+<pre><code data-trim contenteditable class="erlang">
+route_frame(F={H=#frame_header{
+                  length=L,
+                  stream_id=StreamId}, _Payload},
+            S = #chatterbox_fsm_state{
+                   streams=Streams,
+                   connection=C=#connection_state{
+                                   socket=_Socket,
+                                   recv_window_size=RWS
+                                  }
+                  })
+    when H#frame_header.type == ?DATA ->
+    {Stream, NewStreamsTail} = get_stream(StreamId, Streams),
+
+    %% Decrement connection recv_window L
+    NewRWS = RWS - L,
+
+    %% Decrement stream recv_window L happens in http2_stream:recv_frame
+    FinalStream = http2_stream:recv_frame(F, Stream),
+
+    {next_state, connected, S#chatterbox_fsm_state{
+                              streams=[{StreamId,FinalStream}|NewStreamsTail],
+                              connection=C#connection_state{
+                                           recv_window_size=NewRWS
+                                          }
+                             }
+    };
+</code></pre>
+          </section>
 
         </section>
+
+
 
         <section>
           <section>
@@ -1219,6 +1392,7 @@ continuation(_, State) ->
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        width: 1200,
         controls: true,
         progress: true,
         history: true,
