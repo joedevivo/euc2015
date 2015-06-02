@@ -549,25 +549,85 @@
             <h2>HPACK Tables Example</h2>
           </section>
           <section>
-            <h2>Request 1</h2>
-            <pre>
-:path - "/"
-user-agent - "my cool browser"
-x-custom-header - "some custom value"
-            </pre>
+            <pre><code data-trim contenteditable class="erlang">
+Headers1 = [
+           {<<":path">>, <<"/">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"some custom value">>}
+          ],
+HeaderContext1 = hpack:new_encode_context(),
+{HeadersBin1, HeaderContext2} = hpack:encode(Headers1, HeaderContext1),
+
+Headers2 = [
+           {<<":path">>, <<"/some_file.html">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"some custom value">>}
+          ],
+{HeadersBin2, HeaderContext3} = hpack:encode(Headers2, HeaderContext2),
+
+Headers3 = [
+           {<<":path">>, <<"/some_file.html">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"new value">>}
+          ],
+{HeadersBin3, _HeaderContext4} = hpack:encode(Headers3, HeaderContext3),
+  </code></pre>
           </section>
           <section>
+            <h2>Request 1</h2>
+            <pre><code data-trim contenteditable class="erlang">
+Headers1 = [
+           {<<":path">>, <<"/">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"some custom value">>}
+          ],
+  </code></pre>
+          </section>
+          <!--section>
 <pre>
 :path - "/"
     - Index 4
 user-agent - "my cool browser"
     - Index 58, Literal Value "my cool browser"
 x-custom-header - "some custom value"
-     - Non indexed "x-custom-header", "some custom value"
+     - Indexed new name, "x-custom-header", "some custom value"
 </pre>
+          </section-->
+          <section>
+            <h4>Wiresharked R1</h4>
+<pre>
+        Header: :path: /
+            Name Length: 5
+            Name: :path
+            Value Length: 1
+            Value: /
+            Representation: Indexed Header Field
+            Index: 4
+        Header: user-agent: my cool browser
+            Name Length: 10
+            Name: user-agent
+            Value Length: 15
+            Value: my cool browser
+            Representation: Literal Header Field with Incremental Indexing - Indexed Name
+            Index: 58
+        Header: x-custom-header: some custom value
+            Name Length: 15
+            Name: x-custom-header
+            Value Length: 17
+            Value: some custom value
+            Representation: Literal Header Field with Incremental Indexing - New Name
+</pre>
+            <aside class="notes">Look at the first and second headers' index, and the third has none</aside>
           </section>
+
           <section>
             <h2>R1 Context updates</h2>
+<pre><code data-trim contenteditable class="erlang">
+DynamicTable = [
+  {62,<<"x-custom-header">>,<<"some custom value">>},
+  {63,<<"user-agent">>,     <<"my cool browser">>}
+]
+</code></pre>
             <ul>
               <li>:path changes nothing</li>
               <li>"user-agent"/"my cool browser" is now Index 62</li>
@@ -578,13 +638,15 @@ x-custom-header - "some custom value"
 
           <section>
             <h2>Request 2</h2>
-            <pre>
-:path - "/some_file.html"
-user-agent - "my cool browser"
-x-custom-header - "some custom value"
-            </pre>
+            <pre><code data-trim contenteditable class="erlang">
+Headers2 = [
+           {<<":path">>, <<"/some_file.html">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"some custom value">>}
+          ],
+  </code></pre>
           </section>
-          <section>
+          <!--section>
 <pre>
 :path - "/some_file.html"
   - Index 4, Literal Value "/some_file.html"
@@ -593,27 +655,63 @@ user-agent - "my cool browser"
 x-custom-header - "some custom value"
   - Index 62
 </pre>
+          </section-->
+          <section>
+            <h4>Wiresharked R2</h4>
+<pre>
+        Header: :path: /some_file.html
+            Name Length: 5
+            Name: :path
+            Value Length: 15
+            Value: /some_file.html
+            Representation: Literal Header Field with Incremental Indexing - Indexed Name
+            Index: 4
+        Header: user-agent: my cool browser
+            Name Length: 10
+            Name: user-agent
+            Value Length: 15
+            Value: my cool browser
+            Representation: Indexed Header Field
+            Index: 64
+        Header: x-custom-header: some custom value
+            Name Length: 15
+            Name: x-custom-header
+            Value Length: 17
+            Value: some custom value
+            Representation: Indexed Header Field
+            Index: 63
+</pre>
+            <aside class="notes">Look at those indexes? 64 &amp; 63? Didn't I just say 62 &amp; 63? Yes! It's because the encoding context is updated per header, not per request. Ordering!</aside>
           </section>
           <section>
             <h2>R2: Context updates</h2>
+<pre><code data-trim contenteditable class="erlang">
+[
+  {62,<<":path">>,          <<"/some_file.html">>},
+  {63,<<"x-custom-header">>,<<"some custom value">>},
+  {64,<<"user-agent">>,     <<"my cool browser">>}
+]
+</code></pre>
             <ul>
               <li>":path"/"/some_file.html" is the new Index 62</li>
               <li>"x-custom-header"/"some custom value" is +1'd 63</li>
               <li>"user-agent"/"my cool browser" is +1'd to 64</li>
             </ul>
             <aside class="notes">
-              Basically an MRU cache. LRU headers fall off the end of the table
+              FIFO queue. First in, First out. Falls of the end.
             </aside>
           </section>
           <section>
             <h2>Request 3</h2>
-            <pre>
-:path - "/some_file.html"
-user-agent - "my cool browser"
-x-custom-header - "new value"
-            </pre>
+            <pre><code data-trim contenteditable class="erlang">
+Headers3 = [
+           {<<":path">>, <<"/some_file.html">>},
+           {<<"user-agent">>, <<"my cool browser">>},
+           {<<"x-custom-header">>, <<"new value">>}
+          ],
+  </code></pre>
           </section>
-          <section>
+          <!--section>
 <pre>
 :path - "/some_file.html"
   - Index 62
@@ -622,14 +720,48 @@ user-agent - "my cool browser"
 x-custom-header - "new value"
   - Index 63, Literal Value "new value"
 </pre>
+          </section-->
+          <section>
+            <h4>Wiresharked R3</h4>
+<pre>
+       Header: :path: /some_file.html
+            Name Length: 5
+            Name: :path
+            Value Length: 15
+            Value: /some_file.html
+            Representation: Indexed Header Field
+            Index: 62
+        Header: user-agent: my cool browser
+            Name Length: 10
+            Name: user-agent
+            Value Length: 15
+            Value: my cool browser
+            Representation: Indexed Header Field
+            Index: 64
+        Header: x-custom-header: new value
+            Name Length: 15
+            Name: x-custom-header
+            Value Length: 9
+            Value: new value
+            Representation: Literal Header Field with Incremental Indexing - Indexed Name
+            Index: 63
+</pre>
           </section>
           <section>
             <h2>R3: Context updates</h2>
+<pre><code data-trim contenteditable class="erlang">
+[
+  {62,<<"x-custom-header">>,<<"new value">>},
+  {63,<<":path">>,          <<"/some_file.html">>},
+  {64,<<"x-custom-header">>,<<"some custom value">>},
+  {65,<<"user-agent">>,     <<"my cool browser">>}
+]
+</code></pre>
             <ul>
               <li>"x-custom-header"/"new value" is the new 62</li>
               <li>":path"/"/some_file.html" is +1'd to 63</li>
-              <li>"user-agent"/"my cool browser" is +1'd to 64</li>
-              <li>"x-custom-header"/"some custom value" is +1'd 65</li>
+              <li>"x-custom-header"/"some custom value" is +1'd 64</li>
+              <li>"user-agent"/"my cool browser" is +1'd to 65</li>
             </ul>
             <aside="notes">
               when the sum of the sizes of name/value pairs exceedes the maximum table size, that last header falls off the end. bye!
@@ -1251,7 +1383,7 @@ route_frame({#frame_header{length=L}, _},
           </section>
           <section>
             <h2>http2_stream</h2>
-            <p>A Faux State Machine</p>
+            <p>A Faux-nite State Machine</p>
           </section>
           <section>
             <pre>
@@ -1336,11 +1468,65 @@ route_frame(F={H=#frame_header{
                              }
     };
 </code></pre>
+            <aside class="notes">This is just the handler for data frames coming in on the chatterbox_fsm connection level</aside>
           </section>
-
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+FinalStream = http2_stream:recv_frame(F, Stream),
+</code></pre>
+            <aside class="notes">If you take one line away from the last slide, let it be this one, because it sends you...</aside>
+          </section>
+          <section>
+            <h2>http2_stream</h2>
+            <p>State Machine without a Process</p>
+          </section>
+          <section>
+            <h2>new/2</h2>
+            <p>new/2 is the new init/1</p>
+            <pre><code data-trim contenteditable class="erlang">
+-spec new(stream_id(), {pos_integer(), pos_integer()}) -> stream_state().
+new(StreamId, {SendWindowSize, RecvWindowSize}) ->
+    #stream_state{
+       stream_id=StreamId,
+       send_window_size = SendWindowSize,
+       recv_window_size = RecvWindowSize
+      }.
+</code></pre>
+            <aside class="notes">All of the initial state, none of the process spawning</aside>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+recv_frame(F={FH = #frame_header{
+              stream_id=StreamId,
+              type=?HEADERS
+             }, _Payload},
+           State = #stream_state{state=idle})
+when ?IS_FLAG(FH#frame_header.flags, ?FLAG_END_STREAM) ->
+    State#stream_state{
+      stream_id = StreamId,
+      state = half_closed_remote,
+      incoming_frames = [F]
+     };
+</code></pre>
+            <aside class="notes">First clause will handle transitions from idle to half_closed_remote, via HEADERS frame with END_STREAM flag set</aside>
+          </section>
+          <section>
+            <h2>http2_stream</h2>
+<pre><code data-trim contenteditable class="erlang">
+recv_frame(F={_FH = #frame_header{
+              stream_id=StreamId,
+              type=?HEADERS
+             }, _Payload},
+           State = #stream_state{state=idle}) ->
+    State#stream_state{
+      stream_id = StreamId,
+      state = open,
+      incoming_frames = [F]
+     };
+</code></pre>
+            <aside class="notes">This one goes to open, because it's a headers frame, but not the end of stream</aside>
+          </section>
         </section>
-
-
 
         <section>
           <section>
