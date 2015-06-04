@@ -50,155 +50,23 @@
         </section>
 
         <section>
-          <h2>A (Hopefully) Breif History of HTTP</h2>
-        </section>
-
-        <!-- HTTP/0.9 -->
-        <section>
-          <section>
-            <h2>HTTP/0.9</h2>
-            <p>On the scene in 1991</p>
-            <ul>
-              <li>Single Line Request: GET /&lt;path&gt;</li>
-              <li>Request ends on CRLF</li>
-              <li>Only responds with HTML ASCII</li>
-              <li>When that's done, Connection over</li>
-            </ul>
-            <aside class="notes">
-              I start here just to show how simple it was. And...
-            </aside>
-          </section>
-
-          <section>
-            <p>HTTP/0.9 Is still out there!</p>
-            <p>tl;dr - ask for an HTML file and you'll get one</p>
-          </section>
-        </section>
-
-        <!-- HTTP/1.0 -->
-        <section>
-          <section>
-            <h2>HTTP/1.0</h2>
-            <p>
-              1996 - <a href="http://tools.ietf.org/html/rfc1945">RFC-1945: HTTP/1.0</a>
-            </p>
-            <p> New Features! </p>
-            <ul>
-              <li>HEADERS! Request and Response</li>
-              <li>Response Codes</li>
-              <li>Serves file types other than HTML</li>
-            </ul>
-            <aside class="notes">Supporting non-HTML files took the "HT" out of "HTTP"</aside>
-          </section>
-
-          <section>
-            <h2>HTTP/1.0 Lifecycle</h2>
-            <ul>
-              <li>Request headers separated by CRLF</li>
-              <li>2x CRLF means request is done</li>
-              <li>Status Code as first line of response</li>
-              <li>Response headers separated by CRLF</li>
-              <li>Connection closed after every request</li>
-            </ul>
-
-            <aside class="notes">
-              Still plain text.
-            </aside>
-          </section>
-
-          <section>
-            <h2>HTTP/1.0</h2>
-            <p>It really wasn't a standard</p>
-            <aside class="notes">
-              Kind of a reverse spec of everything that was already happening.
-            </aside>
-          </section>
-        </section>
-
-        <section>
-          <h2>HTTP/1.1</h2>
-          <p>1997 - <a href="http://tools.ietf.org/html/rfc2068">RFC-2068: HTTP/1.1</a></p>
-          <p>1999 - <a href="http://tools.ietf.org/html/rfc2616">RFC-2616: HTTP/1.1</a></p>
-          <aside class="notes">
-            HTTP/1.1 was here to resolve ambiguities in HTTP/1.0 and introduce performance optimizations
-          </aside>
-        </section>
-
-        <section>
-          <h2>New Features</h2>
+          <h2>A Brief History of HTTP</h2>
           <ul>
-            <li>Keepalive Connections</li>
-            <li>Chunked Transfers</li>
-            <li>Request Pipelining</li>
-            <li>Byte-Range Requests</li>
-            <li>Transfer Encodings</li>
-            <li>Close connection with 'Connection: close' header</li>
-            <li>Negotiation of: charsets, caching, language, encoding, and more</li>
+            <li>1991 - <a href="http://www.w3.org/Protocols/HTTP/AsImplemented.html">RFC-NULL: HTTP/0.9</a></li>
+            <li>1996 - <a href="http://tools.ietf.org/html/rfc1945">RFC-1945: HTTP/1.0</a></li>
+            <li>1997 - <a href="http://tools.ietf.org/html/rfc2068">RFC-2068: HTTP/1.1</a></li>
+            <li>1999 - <a href="http://tools.ietf.org/html/rfc2616">RFC-2616: HTTP/1.1 (again)</a></li>
+            <li>2014 - <a href="http://tools.ietf.org/html/rfc7230">RFC-7230-5: HTTP/1.1 (again (again))!</a></p>
           </ul>
-
+          <p>I</p>
           <aside class="notes">
-            Chunked encoding for unknown content lengths. headers after the body. Point is, there's a lot added to 1.1.
+            I start here just to show how simple it was. HTTP/1.1 was here to resolve ambiguities in HTTP/1.0 and introduce performance optimizations. In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages
           </aside>
         </section>
 
         <section>
           <section>
-            <h2>HTTP/1.1 Lifecycle</h2>
-            <p>More Complex</p>
-          </section>
-          <section>
-            <h2>HTTP/1.1 Request</h2>
-            <ul>
-              <li>Still Plaintext</li>
-              <li>Still one header per line</li>
-              <li>Still 2x CRLF to terminate</li>
-            </ul>
-            <h4>Possible Chunked Data</h4>
-          </section>
-          <section>
-            <h2>HTTP/1.1 Response</h2>
-            <ul>
-              <li>Still starts with a response code</li>
-              <li>Still has one response header per line</li>
-            </ul>
-            <h4>Possible Chunked Data</h4>
-          </section>
-          <section>
-            <h2>Connection not closed!</h2>
-          </section>
-          <section>
-            <h2>HTTP/1.1 tl;dr</h2>
-            <ul>
-            <li>Request</li>
-            <li>Response</li>
-            <li>Repeat</li>
-            </ul>
-            <p>All on one connection!</p>
-            <p>Act now! Supplies are limited!</p>
-            <aside class="notes">Really, it's a problem.</aside>
-          </section>
-          <section>
-            <h2>Side note on HTTP/1.0</h2>
-            <p>Keepalive connections were backported to HTTP/1.0, but it's disabled by default</p>
-          </section>
-          <section>
-            <h2>HTTP/1.1 Spec is HUGE</h2>
-            <p>In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages</p>
-          </section>
-
-          <section>
-            <h2>Many HTTP/1.1 Features are OPTIONAL</h2>
-            <p>Like Pipelining</p>
-            <p>Very rare to find a single product implementing the full feature set</p>
-            <aside class="notes">
-              that means a lot software talking to each other, that have different feature sets
-            </aside>
-          </section>
-        </section>
-
-        <section>
-          <section>
-            <h2>On HTTP/1.1's TCP Useage</h2>
+            <h2>On HTTP/1.1's TCP Usage</h2>
           </section>
           <section>
             <h2>It uses less connections because 'Keepalive'</h2>
@@ -236,7 +104,7 @@
             <h2>Transfer Sizes</h2>
             <h2>Dec/2010 - Apr/2015</h2>
             <img src="./img/chart2.png"/>
-            <p>Transfer sizes and quantities are going UP!</p>
+            <aside class="notes">Transfer sizes and quantities are going UP! Which would make HoL blocking worse, but also makes the performance hacks worse</aside>
           </section>
         </section>
 
@@ -244,21 +112,22 @@
           <section>
             <h2>HTTP/2 Abstract</h2>
             <p>
-  This specification describes an optimized expression of the semantics
-  of the Hypertext Transfer Protocol (HTTP), referred to as HTTP
-  version 2 (HTTP/2).  HTTP/2 enables a <b>more efficient use of network
-  resources</b> and a <b>reduced perception of latency</b> by introducing <b>header
-  field compression</b> and <b>allowing multiple concurrent exchanges on the
-  same connection</b>.  It also introduces <b>unsolicited push of
-  representations from servers</b> to clients.
-  </p><p>
-  This specification is an alternative to, but does not obsolete, the
-  HTTP/1.1 message syntax.  <b>HTTP’s existing semantics remain unchanged.</b>
-  </p>
+              This specification describes an optimized expression of the semantics
+              of the Hypertext Transfer Protocol (HTTP), referred to as HTTP
+              version 2 (HTTP/2).  HTTP/2 enables a <b>more efficient use of network
+              resources</b> and a <b>reduced perception of latency</b> by introducing <b>header
+              field compression</b> and <b>allowing multiple concurrent exchanges on the
+              same connection</b>.  It also introduces <b>unsolicited push of
+              representations from servers</b> to clients.
+            </p>
+            <p>
+              This specification is an alternative to, but does not obsolete, the
+              HTTP/1.1 message syntax.  <b>HTTP's existing semantics remain unchanged.</b>
+            </p>
           </section>
 
           <section>
-            <h2>Goals of an HTTP Update</h2>
+            <h2>High Level HTTP/2</h2>
             <ul>
               <li>more efficient use of network resources</li>
               <li>reduced perception of latency</li>
@@ -272,11 +141,7 @@
           <section>
             <h2>SPDY</h2>
             <p>Google tried to fix this and pretty much proved it could work</p>
-          </section>
-
-          <section>
-            <h2>s/SPDY\/3/http2 draft-00</h2>
-            <p>One day, the SPDY/3 draft became the HTTP/2 draft</p>
+            <aside class="notes">One day, the SPDY/3 draft became the HTTP/2 draft</aside>
           </section>
         </section>
         <section>
@@ -284,17 +149,10 @@
           <p>
             2015 - <a href="http://tools.ietf.org/html/rfc7540">RFC 7540</a>
           </p>
-
           <ul>
-            <li>You can keep your semantics</li>
-            <li>Binary Protocol</li>
-            <li>Header Compression</li>
-            <li>Mulitplexing</li>
-            <li>Frames</li>
-            <li>Flow Control</li>
-            <li>Prioritization (Maybe?)</li>
-            <li>Server Push</li>
-            <li>Upgrading HTTP/1 requests</li>
+            <li>Keep your semantics</li>
+            <li>A path to upgrading</li>
+            <li>Be more efficient with connections / networking</li>
           </ul>
         </section>
 
@@ -313,40 +171,50 @@
           <section>
             <h2>Technically that means</h2>
             <ul>
-
               <li><a href="http://tools.ietf.org/html/rfc7231">RFC 7231</a>: HTTP/1.1 Semantics and Content</li>
               <li><a href="http://tools.ietf.org/html/rfc7232">RFC 7232</a>: HTTP/1.1 Conditional Request</li>
               <li><a href="http://tools.ietf.org/html/rfc7233">RFC 7233</a>: HTTP/1.1 Range Requests</li>
               <li><a href="http://tools.ietf.org/html/rfc7234">RFC 7234</a>: HTTP/1.1 Caching</li>
               <li><a href="http://tools.ietf.org/html/rfc7235">RFC 7235</a>: HTTP/1.1 Authentication</li>
-              <li>And parts of <a href="http://tools.ietf.org/html/rfc7230">RFC 7230</a>: HTTP/1.1 Mesage Syntax and Routing</li>
+              <li>And parts of <a href="http://tools.ietf.org/html/rfc7230">RFC 7230</a>: HTTP/1.1 Message Syntax and Routing</li>
             </ul>
+          </section>
+          <section>
+            <h4 style="color: #b40f29";>Erlang</h4>
+            <img style="border:none;" src="./img/webmachine.png"/>
+            <aside class="notes">There's an abstraction layer where we can plug chatterbox into something like webmachine for processing REST requests</aside>
           </section>
         </section>
 
-        <!-- binary -->
         <section>
           <section>
-            <h2>Binary Protocol</h2>
-            <ul>
-              <li>Bye Bye Telnet</li>
-              <li>Bleep blorp</li>
-              <li>Binaries make the spec less ambigous</li>
-            </ul>
+            <h2>Upgrading HTTP/1* Requests</h2>
           </section>
           <section>
-            <h2>Binaries =:= Happy Erlangers</h2>
+            <h2>https://</h2>
+            <p>Uses TLS's "Next Protocol Negotiation"</p>
+            <p>Or TLS's "Application Layer Protocol Negotiation"</p>
+            <aside class="notes">NPN was what was availble for SPDY, but it was never totally formalized. HTTP/2 supports both to be SPDY friendly, but recommends ALPN</aside>
           </section>
+          <section>
+            <h2>http://</h2>
+            <p>Uses "Upgrade: " header.</p>
+            <p>HTTP/2 servers respond with status code </p>
+            <pre>101 Switching</pre>
+          </section>
+        </section>
+
+        <section>
+          <h2>Networking Optimizations</h2>
         </section>
 
         <!-- hpack -->
         <section>
           <section>
             <h2>Header Compression</h2>
-            <ul>
-              <li>Stateless protocols are repetitive</li>
-              <li>HTTP is stateless</li>
-            </ul>
+            <p>HTTP is stateless</p>
+            <p class="fragment">Stateless protocols are repetitive</p>
+            <p class="fragment">Stateless protocols are repetitive</p>
           </section>
           <section>
             <h2>HPACK - <a href="http://tools.ietf.org/html/rfc7541">RFC 7541</a></h2>
@@ -354,10 +222,120 @@
           </section>
           <section>
             <h2>Compression Context is Stateful</h2>
+            <aside class="notes">It's stateful at the connection level, but each request is still stateless</aside>
+          </section>
+
+          <section>
+            <h2>What is a compression context?</h2>
+            <p class="fragment">Lookup table for common and recently used headers</p>
+            <aside class="notes"></aside>
+          </section>
+
+          <section>
+            <h4 style="color: #b40f29";>Erlang</h4>
+<pre><code data-trim contenteditable class="erlang">
+[{pos_integer(), binary(), binary()}]
+</code></pre>
+          </section>
+
+          <section data-background-transition="fade">
+            <h2>The Static Table</h2>
+<pre>
+                    +-------+--------------------+---------------+
+                    | Index | Header Name        | Header Value  |
+                    +-------+--------------------+---------------+
+                    | 1     | :authority         |               |
+                    | 2     | :method            | GET           |
+                    | 3     | :method            | POST          |
+                    | 4     | :path              | /             |
+                    | 5     | :path              | /index.html   |
+                    | 6     | :scheme            | http          |
+                    | 7     | :scheme            | https         |
+                    | 8     | :status            | 200           |
+                    | 13    | :status            | 404           |
+                    | 14    | :status            | 500           |
+                    | 15    | accept-charset     |               |
+                    | 16    | accept-encoding    | gzip, deflate |
+                                        ...
+                    | 57    | transfer-encoding  |               |
+                    | 58    | user-agent         |               |
+                    | 59    | vary               |               |
+                    | 60    | via                |               |
+                    | 61    | www-authenticate   |               |
+                    +-------+--------------------+---------------+
+</pre>
+          </section>
+          <section>
+            <h4 style="color: #b40f29";>Erlang</h4>
+<pre><code class="erlang" style="max-height:100%">                      [{1  , <<":authority">>       , undefined},
+                       {2  , <<":method">>          , <<"GET">>},
+                       {3  , <<":method">>          , <<"POST">>},
+                       {4  , <<":path">>            , <<"/">>},
+                       {5  , <<":path">>            , <<"/index.html">>},
+                       {6  , <<":scheme">>          , <<"http">>},
+                       {7  , <<":scheme">>          , <<"https">>},
+                       {8  , <<":status">>          , <<"200">>},
+                       {13 , <<":status">>          , <<"404">>},
+                       {14 , <<":status">>          , <<"500">>},
+                       {15 , <<"accept-charset">>   , undefined},
+                       {16 , <<"accept-encoding">>  , <<"gzip, deflate">>},
+                                    ...
+                       {57 , <<"transfer-encoding">>, undefined},
+                       {58 , <<"user-agent">>       , undefined},
+                       {59 , <<"vary">>             , undefined},
+                       {60 , <<"via">>              , undefined},
+                       {61 , <<"www-authenticate">> , undefined}]
+</code></pre>
+            <aside class="notes">
+              These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
+              Sometimes there's no value, but the header name is what we're saving here, so 15+value is always "accept-charset", Indexes 1-61, Sometimes value, sometimes not. They're all hardcoded and are constant.
+            </aside>
+          </section>
+
+          <section>
+            <h2>Initial Context is the Static Table</h2>
+          </section>
+
+          <section>
+            <h4 style="color: #b40f29";>Erlang</h4>
+<pre><code data-trim contenteditable class="erlang">
+-spec encode([{binary(), binary()}], encode_context()) -> {binary(), encode_context()}.
+-spec decode(binary(), decode_context()) -> {headers(), decode_context()}.
+</code></pre>
+          </section>
+
+          <section>
+            <h4>Encoding any header that already exists in the context doesn't change the context</h4>
+<pre><code data-trim contenteditable class="erlang">
+StaticTable = hpack:new_encode_context(),
+{HeaderBin, StaticTable} = encode([{<<":status">>, <<"200">>}], StaticTable).
+
+StaticTable = hpack:new_decode_context(),
+{[{<<":status">>, <<"200">>}], StaticTable} = decode(HeaderBin, StaticTable).
+</code></pre>
+          </section>
+
+          <section>
+            <h2>The Dynamic Table</h2>
+            <p>Add your own!</p>
+            <p>Indexes 62+</p>
             <p>
-              By having a stateful context for compression, you can send the same header 100 times over a connection, but after the first time the client and server will have agreed on a much smaller binary value.
+              Bounded by size in HTTP/2 connection settings as a security precaution
             </p>
           </section>
+
+          <section>
+            <h4>Encoding any header that doesn't already exists in the context changes the context</h4>
+<pre><code data-trim contenteditable class="erlang">
+StaticTable = hpack:new_encode_context(),
+{HeaderBin, NewContext} = encode([{<<":status">>, <<"600">>}], StaticTable),
+NewContext =/= StaticTable,
+%% Second time we try and encode this header
+{HeaderBin, NewContext} = encode([{<<":status">>, <<"600">>}], NewContext).
+%% Order Matters!
+</code></pre>
+          </section>
+
           <section>
             <h2>There Are Four Contexts!</h2>
             <p>Given two peers: X &amp; Y, connected over C1 </p>
@@ -372,6 +350,24 @@
               Two for each peer, Maybe easier to think of as one for Requests and one for Responses. If you open multiple connections, there will be 4 contexts per connection, but you wouldn't do that because you can multiplex :D
             </aside>
           </section>
+
+          <section>
+            <h2>MATH!</h2>
+            <p>
+              For a connection between two peers, Client and Server, Server<sub>Context</sub> and Client<sub>Context</sub> are both initialized with the values from the static table
+            </p>
+            <p>
+              encode(Headers, Client<sub>Context</sub>) -> Client<sub>Context</sub>', EncodedBin
+            </p>
+            <p>
+              decode(EncodedBin, Server<sub>Context</sub>) -> Server<sub>Context</sub>', Headers
+            </p>
+            <p>
+              Client<sub>Context</sub>' == Server<sub>Context</sub>'
+            </p>
+          </section>
+
+
           <section>
             <h2>The Basic Case</h2>
 <pre>                    +---------------+           +---------------+
@@ -407,93 +403,14 @@
 | +----------+   |Encode (A1)|   +--+-----------+--+   |Decode (A2)|   +----------+ |
 | +----------+   |  Context  |   +--+-----------+--+   |  Context  |   +----------+ |
 | |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
-| |Headers #2|-->|           |-->|   Headers #3    |-->|           |-->|Headers #3| |
+| |Headers #3|-->|           |-->|   Headers #3    |-->|           |-->|Headers #3| |
 | +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
 | +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
 | |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
-| |Headers #2+-->|           |-->|   Headers #4    |-->|           |-->|Headers #4| |
-| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
-|                                   |           |                                   |
-| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
-| |Plain Resp|   |Decode (B2)|   |Encoded Response |   |Encode (B1)|   |Plain Resp| |
-| | Headers  |<--|  Context  |<--|     Headers     |<--|  Context  |<--| Headers  | |
+| |Headers #4+-->|           |-->|   Headers #4    |-->|           |-->|Headers #4| |
 | +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
 +-----------------------------------+           +-----------------------------------+
 </pre></section>
-          <section>
-
-            <h2>The Static Table</h2>
-            <!--table>
-              <thead>
-                <tr>
-                  <th>Index</th>
-                  <th>Header Name</th>
-                  <th>Header Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1 </td><td>:authority     </td><td>             </td></tr>
-                <tr><td>2 </td><td>:method        </td><td>GET          </td></tr>
-                <tr><td>3 </td><td>:method        </td><td>POST         </td></tr>
-                <tr><td>4 </td><td>:path          </td><td>/            </td></tr>
-                <tr><td>5 </td><td>:path          </td><td>/index.html  </td></tr>
-                <tr><td>6 </td><td>:scheme        </td><td>http         </td></tr>
-                <tr><td>7 </td><td>:scheme        </td><td>https        </td></tr>
-                <tr><td>8 </td><td>:status        </td><td>200          </td></tr>
-                <tr><td>9 </td><td>:status        </td><td>204          </td></tr>
-                <tr><td>10</td><td>:status        </td><td>206          </td></tr>
-                <tr><td>11</td><td>:status        </td><td>304          </td></tr>
-                <tr><td>12</td><td>:status        </td><td>400          </td></tr>
-                <tr><td>13</td><td>:status        </td><td>404          </td></tr>
-                <tr><td>14</td><td>:status        </td><td>500          </td></tr>
-                <tr><td>15</td><td>accept-charset </td><td>             </td></tr>
-                <tr><td>16</td><td>accept-encoding</td><td>gzip, deflate</td></tr>
-              </tbody>
-            </table-->
-<pre>
-                    +-------+--------------------+---------------+
-                    | Index | Header Name        | Header Value  |
-                    +-------+--------------------+---------------+
-                    | 1     | :authority         |               |
-                    | 2     | :method            | GET           |
-                    | 3     | :method            | POST          |
-                    | 4     | :path              | /             |
-                    | 5     | :path              | /index.html   |
-                    | 6     | :scheme            | http          |
-                    | 7     | :scheme            | https         |
-                    | 8     | :status            | 200           |
-                    | 13    | :status            | 404           |
-                    | 14    | :status            | 500           |
-                    | 15    | accept-charset     |               |
-                    | 16    | accept-encoding    | gzip, deflate |
-                                        ...
-                    | 57    | transfer-encoding  |               |
-                    | 58    | user-agent         |               |
-                    | 59    | vary               |               |
-                    | 60    | via                |               |
-                    | 61    | www-authenticate   |               |
-                    +-------+--------------------+---------------+
-</pre>
-            <aside class="notes">
-              These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
-              Sometimes there's no value, but the header name is what we're saving here, so 15+value is always "accept-charset"
-            </aside>
-          </section>
-          <section>
-            <ul>
-              <li>Indexes 1-61</li>
-              <li>Sometimes value, sometimes not</li>
-            </ul>
-          </section>
-          <section>
-            <h2>The Dynamic Table</h2>
-            <p>Indexes 62+</p>
-          </section>
-          <section>
-            <p>
-              Bounded by size in HTTP/2 connection settings as a security precaution
-            </p>
-          </section>
           <section>
             <h2>How "H" Packs</h2>
           </section>
@@ -530,7 +447,7 @@
                           +-------------------------------+
             </pre>
             <aside class="notes">
-              A Name that's already in the table, but a different value
+              A Name that's already in the table, but a different value. Lol, what if index is bigger than 2^6-1, which is "63" and can easily happen!
             </aside>
           </section>
 
@@ -568,12 +485,32 @@
           </section>
 
           <section>
+            <h4 style="color: #b40f29";>Erlang</h4>
+<pre><code data-trim contenteditable class="erlang">
+decode(<<>>, HeadersAcc, C) -> {HeadersAcc, C};
+%% First bit is '1', so it's an 'Indexed Header Feild'
+decode(<<2#1:1,_/bits>>=B, HeaderAcc, Context) ->
+    decode_indexed_header(B, HeaderAcc, Context);
+%% First two bits are '01' so it's a 'Literal Header Field with Incremental Indexing'
+decode(<<2#01:2,_/bits>>=B, HeaderAcc, Context) ->
+    decode_literal_header_with_indexing(B, HeaderAcc, Context);
+%% First four bits are '0000' so it's a 'Literal Header Field without Indexing'
+decode(<<2#0000:4,_/bits>>=B, HeaderAcc, Context) ->
+    decode_literal_header_without_indexing(B, HeaderAcc, Context);
+%% First four bits are '0001' so it's a 'Literal Header Field never Indexed'
+decode(<<2#0001:4,_/bits>>=B, HeaderAcc, Context) ->
+    decode_literal_header_never_indexed(B, HeaderAcc, Context);
+%% First three bits are '001' so it's a 'Dynamic Table Size Update'
+decode(<<2#001:3,_/bits>>=B, HeaderAcc, Context) ->
+    decode_dynamic_table_size_update(B, HeaderAcc, Context);
+</code></pre>
+            <aside class="notes">Pattern Matching makes this easy!</aside>
+          </section>
+
+          <section>
             <h2>Huffman Encoding</h2>
-            <ul>
-              <li>Designed for HTTP</li>
-              <li>The more common the ASCII character, the fewer bytes it takes</li>
-            </ul>
-            <aside class="notes">Did you see that "H" bit?</aside>
+            <aside class="notes">Did you see that "H" bit? It means the string is huffman encoded. It's an option for saying more popular characters in less bytes
+            </aside>
           </section>
           <section>
 <pre>
@@ -626,7 +563,7 @@
             <h2>HPACK Tables Example</h2>
           </section>
           <section>
-            <pre><code data-trim contenteditable class="erlang">
+            <pre><code style="max-height:100%;" class="erlang">
 Headers1 = [
            {<<":path">>, <<"/">>},
            {<<"user-agent">>, <<"my cool browser">>},
@@ -652,8 +589,7 @@ Headers3 = [
           </section>
           <section>
             <h2>Request 1</h2>
-            <pre><code data-trim contenteditable class="erlang">
-%% Request 1
+            <pre><code contenteditable class="erlang">
                 Headers1 = [
                  {<<":path">>, <<"/">>},
                  {<<"user-agent">>, <<"my cool browser">>},
@@ -675,36 +611,27 @@ x-custom-header - "some custom value"
             <h4>Wiresharked R1</h4>
 <pre>
         Header: :path: /
-            Name Length: 5
-            Name: :path
-            Value Length: 1
-            Value: /
             Representation: Indexed Header Field
-            Index: 4
+            Index: <b>4</b>
         Header: user-agent: my cool browser
-            Name Length: 10
-            Name: user-agent
-            Value Length: 15
-            Value: my cool browser
             Representation: Literal Header Field with Incremental Indexing - Indexed Name
-            Index: 58
+            Index: <b>58</b>
+            Value: <b>my cool browser</b>
         Header: x-custom-header: some custom value
-            Name Length: 15
-            Name: x-custom-header
-            Value Length: 17
-            Value: some custom value
             Representation: Literal Header Field with Incremental Indexing - New Name
+            Name: <b>x-custom-header</b>
+            Value: <b>some custom value</b>
 </pre>
             <aside class="notes">Look at the first and second headers' index, and the third has none</aside>
           </section>
 
           <section>
             <h2>R1 Context updates</h2>
-<pre><code data-trim contenteditable class="erlang">
+<pre><code contenteditable class="erlang">
 DynamicTable = [
                 {62,<<"x-custom-header">>,<<"some custom value">>},
                 {63,<<"user-agent">>,     <<"my cool browser">>}
-]
+              ]
 </code></pre>
             <ul>
               <li>:path changes nothing</li>
@@ -716,8 +643,7 @@ DynamicTable = [
 
           <section>
             <h2>Request 2</h2>
-            <pre><code data-trim contenteditable class="erlang">
-%% Request 2
+            <pre><code contenteditable class="erlang">
                Headers2 = [
                 {<<":path">>, <<"/some_file.html">>},
                 {<<"user-agent">>, <<"my cool browser">>},
@@ -739,37 +665,26 @@ x-custom-header - "some custom value"
             <h4>Wiresharked R2</h4>
 <pre>
         Header: :path: /some_file.html
-            Name Length: 5
-            Name: :path
-            Value Length: 15
-            Value: /some_file.html
             Representation: Literal Header Field with Incremental Indexing - Indexed Name
-            Index: 4
+            Index: <b>4</b>
+            Value: <b>/some_file.html</b>
         Header: user-agent: my cool browser
-            Name Length: 10
-            Name: user-agent
-            Value Length: 15
-            Value: my cool browser
             Representation: Indexed Header Field
-            Index: 64
+            Index: <b>64</b>
         Header: x-custom-header: some custom value
-            Name Length: 15
-            Name: x-custom-header
-            Value Length: 17
-            Value: some custom value
             Representation: Indexed Header Field
-            Index: 63
+            Index: <b>63</b>
 </pre>
             <aside class="notes">Look at those indexes? 64 &amp; 63? Didn't I just say 62 &amp; 63? Yes! It's because the encoding context is updated per header, not per request. Ordering!</aside>
           </section>
           <section>
             <h2>R2: Context updates</h2>
-<pre><code data-trim contenteditable class="erlang">
-[
+<pre><code contenteditable class="erlang">
+              [
                 {62,<<":path">>,          <<"/some_file.html">>},
                 {63,<<"x-custom-header">>,<<"some custom value">>},
                 {64,<<"user-agent">>,     <<"my cool browser">>}
-]
+              ]
 </code></pre>
             <ul>
               <li>":path"/"/some_file.html" is the new Index 62</li>
@@ -782,8 +697,7 @@ x-custom-header - "some custom value"
           </section>
           <section>
             <h2>Request 3</h2>
-            <pre><code data-trim contenteditable class="erlang">
-              %% Request 3
+            <pre><code contenteditable class="erlang">
                     Headers3 = [
                      {<<":path">>, <<"/some_file.html">>},
                      {<<"user-agent">>, <<"my cool browser">>},
@@ -805,37 +719,26 @@ x-custom-header - "new value"
             <h4>Wiresharked R3</h4>
 <pre>
        Header: :path: /some_file.html
-            Name Length: 5
-            Name: :path
-            Value Length: 15
-            Value: /some_file.html
             Representation: Indexed Header Field
-            Index: 62
+            Index: <b>62</b>
         Header: user-agent: my cool browser
-            Name Length: 10
-            Name: user-agent
-            Value Length: 15
-            Value: my cool browser
             Representation: Indexed Header Field
-            Index: 64
+            Index: <b>64</b>
         Header: x-custom-header: new value
-            Name Length: 15
-            Name: x-custom-header
-            Value Length: 9
-            Value: new value
             Representation: Literal Header Field with Incremental Indexing - Indexed Name
-            Index: 63
+            Index: <b>63</b>
+            Value: new value
 </pre>
           </section>
           <section>
             <h2>R3: Context updates</h2>
-<pre><code data-trim contenteditable class="erlang">
-[
-  {62,<<"x-custom-header">>,<<"new value">>},
-  {63,<<":path">>,          <<"/some_file.html">>},
-  {64,<<"x-custom-header">>,<<"some custom value">>},
-  {65,<<"user-agent">>,     <<"my cool browser">>}
-]
+<pre><code contenteditable class="erlang">
+                [
+                  {62,<<"x-custom-header">>,<<"new value">>},
+                  {63,<<":path">>,          <<"/some_file.html">>},
+                  {64,<<"x-custom-header">>,<<"some custom value">>},
+                  {65,<<"user-agent">>,     <<"my cool browser">>}
+                ]
 </code></pre>
             <ul>
               <li>"x-custom-header"/"new value" is the new 62</li>
@@ -843,11 +746,10 @@ x-custom-header - "new value"
               <li>"x-custom-header"/"some custom value" is +1'd 64</li>
               <li>"user-agent"/"my cool browser" is +1'd to 65</li>
             </ul>
-            <aside="notes">
+            <aside class="notes">
               when the sum of the sizes of name/value pairs exceedes the maximum table size, that last header falls off the end. bye!
             </aside>
           </section>
-
         </section>
 
         <!-- this is an interesting bug, but not something i have time for in this presentation. -->
@@ -882,7 +784,7 @@ x-custom-header - "new value"
           <section>
             <h2>Streams</h2>
             <p>There's one connection, streams are logical abstractions across it</p>
-            <p>They have unique identifiers</p>
+            <p>They have unique identifier s</p>
             <p>Section 5.1.1 says client initiated stream ids are odd, server's are even</p>
           </section>
           <section>
@@ -1011,6 +913,56 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
             <h2>Stream Identifier</h2>
             <p>Which multiplexed stream this frame is for</p>
           </section>
+
+                    <section>
+<pre>
+        +-----------------------------------------------+
+        |                 Length (24)                   |
+        +---------------+---------------+---------------+
+        |   Type (8)    |   Flags (8)   |
+        +-+-------------+---------------+-------------------------------+
+        |R|                 Stream Identifier (31)                      |
+        +=+=============================================================+
+        |                   Frame Payload (0...)                      ...
+        +---------------------------------------------------------------+
+</pre>
+
+            <h4 style="color: #b40f29";>Erlang</h4>
+<pre><code class="erlang">
+-spec read_binary_frame_header(binary()) -&gt; {frame_header(), binary()}.
+read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/bits&gt;&gt;) -&gt;
+    Header = #frame_header{
+        length = Length,
+        type = Type,
+        flags = Flags,
+        stream_id = StreamId
+    },
+    {Header, Rem}.
+</code></pre>
+            <aside class="notes">The first 9 bytes better be a frame header. The following bytes depend on it.</aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Connection Level Frame Types</h2>
+          </section>
+          <section>
+            <h2>SETTINGS</h2>
+            <p>Negotiates overall connection settings</p>
+          </section>
+          <section>
+            <h2>PING</h2>
+            <p>measuring round trip, also keeps the connection open</p>
+          </section>
+          <section>
+            <h2>GOAWAY</h2>
+            <p>We're done here. Could be an error, could just be natual causes</p>
+          </section>
+          <section>
+            <h2>WINDOW_UPDATE</h2>
+            <p>Issues a credit for flow control for the entire connection</p>
+          </section>
         </section>
 
         <section>
@@ -1018,12 +970,20 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
             <h2>Frame Types</h2>
           </section>
           <section>
-            <h2>DATA</h2>
-            <p>Request and Response Bodies are made of these</p>
-          </section>
-          <section>
             <h2>HEADERS</h2>
             <p>Request and Response Headers start with these</p>
+          </section>
+          <section>
+            <h2>PUSH_PROMISE</h2>
+            <p>Headers for a response for which there was no request</p>
+          </section>
+          <section>
+            <h2>CONTINUATION</h2>
+            <p>PUSH_PROMISE and HEADERS are the first frame of headers, but if they're too big to fit in one frame, the rest comes over in CONTINUATION frames. When a frame comes over with the END_HEADERS flag set, we know it's over</p>
+          </section>
+          <section>
+            <h2>DATA</h2>
+            <p>Request and Response Bodies are made of these</p>
           </section>
           <section>
             <h2>PRIORITY</h2>
@@ -1034,39 +994,21 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
             <p>Sent to give up on a stream</p>
           </section>
           <section>
-            <h2>SETTINGS</h2>
-            <p>Negotiates overall connection settings</p>
-          </section>
-          <section>
-            <h2>PUSH_PROMISE</h2>
-            <p>Headers for a response for which there was no request</p>
-          </section>
-          <section>
-            <h2>PING</h2>
-            <p>measuring round trip</p>
-          </section>
-          <section>
-            <h2>GOAWAY</h2>
-            <p>We're done here. Could be an error, could just be natual causes</p>
-          </section>
-          <section>
             <h2>WINDOW_UPDATE</h2>
-            <p>Issues a credit for flow control</p>
-          </section>
-          <section>
-            <h2>CONTINUATION</h2>
-            <p>PUSH_PROMISE and HEADERS are the first frame of headers, but if they're too big to fit in one frame, the rest comes over in CONTINUATION frames. When a frame comes over with the END_HEADERS flag set, we know it's over</p>
+            <p>Issues a credit for flow control for a stream</p>
+            <p>This is the only frame type that works on both levels</p>
           </section>
         </section>
-
 
         <section>
           <section>
             <h2>Flow Control</h2>
+            <p>Applied to both the Connection as a whole and Individual Streams</p>
           </section>
 
           <section>
             <h2>Only Applies to Data Frames</h2>
+            <aside class="notes">Allows control frames to get in</aside>
           </section>
 
           <section>
@@ -1081,12 +1023,14 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
 
           <section>
             <h2>WINDOW_UPDATE</h2>
-            <p>The window update frame is sent by the receiver to increase the number of bytes advertized. There is no decrement operation.</p>
+            <p>
+              The window update frame is sent by the receiver to increase the number of bytes advertized. There is no decrement operation.
+            </p>
           </section>
 
           <section>
-            <h2>Connection and Streams</h2>
-            <p>There's a limit advertized to both</p>
+            <h2 style="color: #b40f29";>Erlang</h2>
+            <aside class="notes">Pattern match on data frame header length. Maintain credit balance in the FSM state for the connection level. We could have put the stream level credit in the stream's gen_fsm, but we don't have one because...</aside>
           </section>
         </section>
 
@@ -1103,6 +1047,219 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
 
         <section>
           <section>
+            <h2>STREAMS</h2>
+          </section>
+          <section>
+            <h2>http2_stream</h2>
+            <p>A Fauxnite State Machine</p>
+            <aside class="notes">A new name for an old idea!</aside>
+          </section>
+          <section>
+            <pre>
+                             +--------+
+                     send PP |        | recv PP
+                    ,--------|  idle  |--------.
+                   /         |        |         \
+                  v          +--------+          v
+           +----------+          |           +----------+
+           |          |          | send H /  |          |
+    ,------| reserved |          | recv H    | reserved |------.
+    |      | (local)  |          |           | (remote) |      |
+    |      +----------+          v           +----------+      |
+    |          |             +--------+             |          |
+    |          |     recv ES |        | send ES     |          |
+    |   send H |     ,-------|  open  |-------.     | recv H   |
+    |          |    /        |        |        \    |          |
+    |          v   v         +--------+         v   v          |
+    |      +----------+          |           +----------+      |
+    |      |   half   |          |           |   half   |      |
+    |      |  closed  |          | send R /  |  closed  |      |
+    |      | (remote) |          | recv R    | (local)  |      |
+    |      +----------+          |           +----------+      |
+    |           |                |                 |           |
+    |           | send ES /      |       recv ES / |           |
+    |           | send R /       v        send R / |           |
+    |           | recv R     +--------+   recv R   |           |
+    | send R /  `----------->|        |&lt;-----------'  send R / |
+    | recv R                 | closed |               recv R   |
+    `----------------------->|        |&lt;----------------------'
+                             +--------+
+            </pre>
+            <aside class="notes">All these transitions are triggered by either receiving or sending a frame. These states exist on both sides of the connection, just like encoding contexts!</aside>
+          </section>
+          <section>
+            <h2>Stream State</h2>
+<pre><code data-trim contenteditable class="erlang">
+-record(stream_state, {
+  stream_id = undefined :: stream_id(),
+  state = idle :: stream_state_name(),
+  send_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
+  recv_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
+  queued_frames = [] :: [frame()],
+  incoming_frames = [] :: [frame()],
+  socket = {undefined, undefined} :: {gen_tcp | ssl, port()}
+}).
+</code></pre>
+          </section>
+
+          <section>
+            <h2>Stream Transitions</h2>
+<pre><code data-trim contenteditable class="erlang">
+-spec recv_frame(frame(), stream_state()) -> stream_state().
+-spec send_frame(frame(), stream_state()) -> stream_state().
+</code></pre>
+          </section>
+
+          <section>
+<pre><code class="erlang">
+route_frame(F={H=#frame_header{
+                  length=L,
+                  stream_id=StreamId}, _Payload},
+            S = #chatterbox_fsm_state{
+                   streams=Streams,
+                   connection=C=#connection_state{
+                                   socket=_Socket,
+                                   recv_window_size=RWS
+                                  }
+                  })
+    when H#frame_header.type == ?DATA ->
+</code></pre>
+          </section>
+
+          <section>
+<pre><code class="erlang">
+    {Stream, NewStreamsTail} = get_stream(StreamId, Streams),
+    %% Decrement connection recv_window L
+    NewRWS = RWS - L,
+    %% Decrement stream recv_window L happens in http2_stream:recv_frame
+    FinalStream = http2_stream:recv_frame(F, Stream),
+</code></pre>
+          </section>
+
+          <section>
+<pre><code class="erlang">
+    {next_state, connected, S#chatterbox_fsm_state{
+                              streams=[{StreamId,FinalStream}|NewStreamsTail],
+                              connection=C#connection_state{
+                                           recv_window_size=NewRWS
+                                          }
+                             }
+    };
+</code></pre>
+            <aside class="notes">This is just the handler for data frames coming in on the chatterbox_fsm connection level</aside>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+FinalStream = http2_stream:recv_frame(F, Stream),
+</code></pre>
+            <aside class="notes">If you take one line away from the last slide, let it be this one, because it sends you...</aside>
+          </section>
+          <section>
+            <h2>http2_stream</h2>
+            <p>State Machine without a Process</p>
+          </section>
+          <section>
+            <h2>new/3</h2>
+            <pre><code data-trim contenteditable class="erlang">
+-spec new(stream_id(), {pos_integer(), pos_integer()}, {gen_tcp|ssl, port()}) -> stream_state().
+new(StreamId, {SendWindowSize, RecvWindowSize}, Socket) ->
+    #stream_state{
+       stream_id=StreamId,
+       send_window_size = SendWindowSize,
+       recv_window_size = RecvWindowSize,
+       socket = Socket
+      }.
+</code></pre>
+            <aside class="notes">
+              new/3 is the new init/1, All of the initial state, none of the process spawning
+            </aside>
+          </section>
+          <section>
+<pre><code class="erlang">
+recv_frame(F={FH = #frame_header{
+              stream_id=StreamId,
+              type=?HEADERS
+             }, _Payload},
+           State = #stream_state{state=idle})
+when ?IS_FLAG(FH#frame_header.flags, ?FLAG_END_STREAM) ->
+    State#stream_state{
+      stream_id = StreamId,
+      state = half_closed_remote,
+      incoming_frames = [F]
+     };
+</code></pre>
+            <aside class="notes">First clause will handle transitions from idle to half_closed_remote, via HEADERS frame with END_STREAM flag set</aside>
+          </section>
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+recv_frame(F={_FH = #frame_header{
+              stream_id=StreamId,
+              type=?HEADERS
+             }, _Payload},
+           State = #stream_state{state=idle}) ->
+    State#stream_state{
+      stream_id = StreamId,
+      state = open,
+      incoming_frames = [F]
+     };
+</code></pre>
+            <aside class="notes">This one goes to open, because it's a headers frame, but not the end of stream</aside>
+          </section>
+          <section>
+            <h2>Flow Control</h2>
+<pre><code data-trim contenteditable class="erlang">
+send_frame(F={#frame_header{
+                 length=L,
+                 type=?DATA
+                },_Data},
+           State = #stream_state{
+                      send_window_size=SWS,
+                      socket={Transport,Socket}
+                     })
+  when SWS >= L ->
+    Transport:send(Socket, http2_frame:to_binary(F)),
+    NewSendWindow = SWS - L,
+    State#stream_state{
+       send_window_size=NewSendWindow
+      };
+</code></pre>
+          </section>
+
+          <section>
+<pre><code class="erlang">
+send_frame(F={#frame_header{
+                 length=L,
+                 type=?DATA
+                },_Data},
+           State = #stream_state{
+                      send_window_size=SWS,
+                      queued_frames = QF
+                     })
+  when SWS < L ->
+    State#stream_state{
+       queued_frames=QF ++ [F]
+      };
+</code></pre>
+            <aside class="notes">A couple of clauses here for handling different kinds of frames received by the http2_stream</aside>
+          </section>
+          <section>
+            <h2></h2>
+<pre><code data-trim contenteditable class="erlang">
+%% This is a baller fold right here.
+%% Fauxnite State Machine at its finest.
+NewStream = lists:foldl(
+              fun(Frame, State) ->
+                      http2_stream:send_frame(Frame, State)
+              end,
+              Stream,
+              Frames),
+</code></pre>
+          <aside class="notes">Processing a sequence of response data frames</aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
             <h2>Server Push</h2>
           </section>
           <section>
@@ -1111,33 +1268,11 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           <section>
             <h2>Static Content</h2>
             <p>Imagine inspecting HTML on the way out, and sending pushes for all the CSS, JavaScript, and Images you need.</p>
-            <p>Is this exciting for APIs? <b>Maybe!</b></p>
+            <p>Is this exciting for APIs? <b>Yes!</b></p>
             <aside class="notes">
-              If your API has common use cases, you could push expected responses. e.g. you just did GET /shoppingcart, and you might usually see a GET /item for each item in the cart after that. While currently you might just return all that info in GET /shoppingcart, you might also take advantage of PP. You might not. This might be dumb.
+              If your response contains a link, push promises are for you!
             </aside>
           </section>
-        </section>
-
-        <section>
-          <section>
-            <h2>Upgrading HTTP1 Requests</h2>
-          </section>
-          <section>
-            <h2>https://</h2>
-            <p>Uses TLS's "Next Protocol Negotiation"</p>
-            <p>Or TLS's "Application Layer Protocol Negotiation"</p>
-          </section>
-          <section>
-            <h2>http://</h2>
-            <p>Uses "Upgrade: " header.</p>
-            <p>HTTP/2 servers respond with status code </p>
-            <pre>101 Switching</pre>
-          </section>
-        </section>
-
-        <section>
-          <h2>OMG Can I See Some Erlang Already?!</h2>
-          <aside class="notes">Understanding the protocol is the hardest part. Anyone can pattern match :D</aside>
         </section>
 
         <section>
@@ -1145,25 +1280,13 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           <p><a href="http://github.com/joedevivo/chatterbox">Chatterbox</a></p>
         </section>
 
-
         <section>
           <h2>Chatterbox FSM</h2>
           <h4>A Connection State Machine</h4>
         </section>
         <section>
           <section>
-            <h2>SETTINGS</h2>
-            <ul>
-              <li>SETTINGS_HEADER_TABLE_SIZE</li>
-              <li>SETTINGS_ENABLE_PUSH</li>
-              <li>SETTINGS_MAX_CONCURRENT_STREAMS</li>
-              <li>SETTINGS_INITIAL_WINDOW_SIZE</li>
-              <li>SETTINGS_MAX_FRAME_SIZE</li>
-              <li>SETTINGS_MAX_HEADER_LIST_SIZE</li>
-            </ul>
-            <aside class="notes">
-              TODO: What are these?
-            </aside>
+            <h2>Without a connection, what can we do?</h2>
           </section>
 
           <section>
@@ -1203,6 +1326,31 @@ If the sender of a SETTINGS frame does not receive an acknowledgement
 within a reasonable amount of time, it MAY issue a connection error
 (Section 5.4.1) of type SETTINGS_TIMEOUT.
             </pre>
+          </section>
+          <section>
+            <h2>tl;dr</h2>
+            <p>A connection start must</p>
+            <ul>
+              <li>Send the TEXT: <b>"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n"</b></li>
+              <li>Must send a SETTINGS frame</li>
+              <li>Must have that SETTINGS frame ACK'd</li>
+              <li>Must receive a SETTINGS frame from the client</li>
+              <li>Must ACK that client's SETTINGS frame</li>
+            </ul>
+          </section>
+          <section>
+            <h2>SETTINGS</h2>
+            <ul>
+              <li>SETTINGS_HEADER_TABLE_SIZE</li>
+              <li>SETTINGS_ENABLE_PUSH</li>
+              <li>SETTINGS_MAX_CONCURRENT_STREAMS</li>
+              <li>SETTINGS_INITIAL_WINDOW_SIZE</li>
+              <li>SETTINGS_MAX_FRAME_SIZE</li>
+              <li>SETTINGS_MAX_HEADER_LIST_SIZE</li>
+            </ul>
+            <aside class="notes">
+              TODO: What are these?
+            </aside>
           </section>
           <section>
             <h2>RFC 7540 - <a href="http://tools.ietf.org/html/rfc7540#section-4">Section 4</a></h2>
@@ -1339,6 +1487,9 @@ settings_handshake_loop(_,FrameToBacklog,Acc,State=#chatterbox_fsm_state{frame_b
           <section>
             <h2>When Things Go Wrong</h2>
             <p>Building a client that breaks the rules</p>
+            <aside class="notes">
+              I needed a client that could break the rules, so I could test that the server breaks properly
+            </aside>
           </section>
           <section>
             <h2>http2c APIs</h2>
@@ -1347,9 +1498,6 @@ settings_handshake_loop(_,FrameToBacklog,Acc,State=#chatterbox_fsm_state{frame_b
               <li>Mid Level - HTTP/2 Frames</li>
               <li>Low Level - Binary</li>
             </ul>
-          </section>
-          <section>
-            <p>I needed a client that could break the rules, so I could test that the server breaks properly</p>
           </section>
           <section>
             <p>RFC 7540 <a href="http://tools.ietf.org/html/rfc7540#section-4.3">Section 4.3</a></p>
@@ -1423,30 +1571,37 @@ Resp2 = http2c:get_frames(Client, 0),
           </section>
           <section>
 <pre><code data-trim contenteditable class="erlang">
-continuation(start_frame, #chatterbox_fsm_state{}) ->
+continuation(start_frame,
+             S = #chatterbox_fsm_state{
+                 connection=#connection_state{
+                               socket=Socket
+                              },
+                 continuation_stream_id = StreamId
+                }) ->
     Frame = {FH,_} = http2_frame:read(Socket),
-    Response = case FH#frame_header.type of
-       ?CONTINUATION ->
-           route_frame(Frame, S);
-       _ ->
-           go_error(?PROTOCOL_ERROR, S)
-    end,
+    lager:debug("[continuation] [start_frame] ~p", [http2_frame:format(Frame)]),
+
+    Response = case {FH#frame_header.stream_id, FH#frame_header.type} of
+                   {StreamId, ?CONTINUATION} ->
+                       route_frame(Frame, S);
+                   _ ->
+                       go_away(?PROTOCOL_ERROR, S)
+               end,
     gen_fsm:send_event(self(), start_frame),
     Response;
 continuation(_, State) ->
-    go_error(?PROTOCOL_ERROR, State).
+    go_away(?PROTOCOL_ERROR, State).
 </code></pre>
           </section>
           <section>
             <h2>Take out the bad frame</h2>
 <pre><code data-trim contenteditable class="erlang">
-    Resp = http2c:get_frames(Client, 3),
-    ct:pal("Resp: ~p", [Resp]),
-    ?assertEqual(2, length(Resp)).
+Resp = http2c:get_frames(Client, 3),
+?assertEqual(2, length(Resp)).
 </code></pre>
           <aside class="notes">If I took out the bad frame, which I did for another test, I'd assert this instead</aside>
+         </section>
         </section>
-
         <section>
           <section>
             <h2>chatterbox_fsm</h2>
@@ -1459,6 +1614,7 @@ continuation(_, State) ->
     {next_state, connected, #chatterbox_fsm_state{}}.
 </code></pre>
           </section>
+
           <section>
             <h2>FRAMES</h2>
             <p>The http2_frame module</p>
@@ -1481,12 +1637,9 @@ from_binary(Bin, Acc) -&gt;
               The binary passed in can be more than one frame. I haven't handled the case where a partial frame arrives. I've started that work in the client, so... soon?
             </aside>
           </section>
-
+<!--
           <section>
             <h2>The Front 9</h2>
-          </section>
-
-          <section>
 <pre>
         +-----------------------------------------------+
         |                 Length (24)                   |
@@ -1511,7 +1664,8 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
 </code></pre>
             <aside class="notes">The first 9 bytes better be a frame header. The following bytes depend on it.</aside>
           </section>
-
+-->
+<!--
           <section>
             <h2>The Following Bytes</h2>
             <p>http2_frame behaviour</p>
@@ -1538,7 +1692,7 @@ read_binary_payload(Socket, Header = #frame_header{type=?HEADERS}) -&gt;
 </code></pre>
             <aside class="notes"></aside>
           </section>
-
+-->
 
           <section>
             <h2>chatterbox_fsm</h2>
@@ -1546,7 +1700,7 @@ read_binary_payload(Socket, Header = #frame_header{type=?HEADERS}) -&gt;
           <section>
 <pre><code data-trim contenteditable class="erlang">
 -spec route_frame(frame(), #chatterbox_fsm_state{}) -&gt;
-    {next_state, connected, #chatterbox_fsm_state{}}.
+    {next_state, connected | continuation | closing, #chatterbox_fsm_state{}}.
 </code></pre>
           </section>
           <section>
@@ -1561,162 +1715,15 @@ route_frame({#frame_header{length=L}, _},
                                  recv_settings=#settings{max_frame_size=MFS}
                                 }})
     when L &gt; MFS -&gt;
-    go_error(?FRAME_SIZE_ERROR, S);
+    go_away(?FRAME_SIZE_ERROR, S);
 </code></pre>
           </section>
         </section>
 
         <section>
-          <section>
-            <h2>STREAMS</h2>
-          </section>
-          <section>
-            <h2>http2_stream</h2>
-            <p>A Faux-nite State Machine</p>
-          </section>
-          <section>
-            <pre>
-                             +--------+
-                     send PP |        | recv PP
-                    ,--------|  idle  |--------.
-                   /         |        |         \
-                  v          +--------+          v
-           +----------+          |           +----------+
-           |          |          | send H /  |          |
-    ,------| reserved |          | recv H    | reserved |------.
-    |      | (local)  |          |           | (remote) |      |
-    |      +----------+          v           +----------+      |
-    |          |             +--------+             |          |
-    |          |     recv ES |        | send ES     |          |
-    |   send H |     ,-------|  open  |-------.     | recv H   |
-    |          |    /        |        |        \    |          |
-    |          v   v         +--------+         v   v          |
-    |      +----------+          |           +----------+      |
-    |      |   half   |          |           |   half   |      |
-    |      |  closed  |          | send R /  |  closed  |      |
-    |      | (remote) |          | recv R    | (local)  |      |
-    |      +----------+          |           +----------+      |
-    |           |                |                 |           |
-    |           | send ES /      |       recv ES / |           |
-    |           | send R /       v        send R / |           |
-    |           | recv R     +--------+   recv R   |           |
-    | send R /  `----------->|        |&lt;-----------'  send R / |
-    | recv R                 | closed |               recv R   |
-    `----------------------->|        |&lt;----------------------'
-                             +--------+
-            </pre>
-          </section>
-          <section>
-            <h2>Stream State</h2>
-<pre><code data-trim contenteditable class="erlang">
--record(stream_state, {
-  stream_id = undefined :: stream_id(),
-  state = idle :: stream_state_name(),
-  send_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
-  recv_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
-  queued_frames = [] :: [frame()],
-  incoming_frames = [] :: [frame()]
-}).
-</code></pre>
-          </section>
-
-          <section>
-            <h2>Stream Transitions</h2>
-<pre><code data-trim contenteditable class="erlang">
--spec recv_frame(frame(), stream_state()) -> stream_state().
-</code></pre>
-          </section>
-
-          <section>
-            <h2>Stream Transitions</h2>
-<pre><code data-trim contenteditable class="erlang">
-route_frame(F={H=#frame_header{
-                  length=L,
-                  stream_id=StreamId}, _Payload},
-            S = #chatterbox_fsm_state{
-                   streams=Streams,
-                   connection=C=#connection_state{
-                                   socket=_Socket,
-                                   recv_window_size=RWS
-                                  }
-                  })
-    when H#frame_header.type == ?DATA ->
-    {Stream, NewStreamsTail} = get_stream(StreamId, Streams),
-
-    %% Decrement connection recv_window L
-    NewRWS = RWS - L,
-
-    %% Decrement stream recv_window L happens in http2_stream:recv_frame
-    FinalStream = http2_stream:recv_frame(F, Stream),
-
-    {next_state, connected, S#chatterbox_fsm_state{
-                              streams=[{StreamId,FinalStream}|NewStreamsTail],
-                              connection=C#connection_state{
-                                           recv_window_size=NewRWS
-                                          }
-                             }
-    };
-</code></pre>
-            <aside class="notes">This is just the handler for data frames coming in on the chatterbox_fsm connection level</aside>
-          </section>
-          <section>
-<pre><code data-trim contenteditable class="erlang">
-FinalStream = http2_stream:recv_frame(F, Stream),
-</code></pre>
-            <aside class="notes">If you take one line away from the last slide, let it be this one, because it sends you...</aside>
-          </section>
-          <section>
-            <h2>http2_stream</h2>
-            <p>State Machine without a Process</p>
-          </section>
-          <section>
-            <h2>new/2</h2>
-            <p>new/2 is the new init/1</p>
-            <pre><code data-trim contenteditable class="erlang">
--spec new(stream_id(), {pos_integer(), pos_integer()}) -> stream_state().
-new(StreamId, {SendWindowSize, RecvWindowSize}) ->
-    #stream_state{
-       stream_id=StreamId,
-       send_window_size = SendWindowSize,
-       recv_window_size = RecvWindowSize
-      }.
-</code></pre>
-            <aside class="notes">All of the initial state, none of the process spawning</aside>
-          </section>
-          <section>
-<pre><code data-trim contenteditable class="erlang">
-recv_frame(F={FH = #frame_header{
-              stream_id=StreamId,
-              type=?HEADERS
-             }, _Payload},
-           State = #stream_state{state=idle})
-when ?IS_FLAG(FH#frame_header.flags, ?FLAG_END_STREAM) ->
-    State#stream_state{
-      stream_id = StreamId,
-      state = half_closed_remote,
-      incoming_frames = [F]
-     };
-</code></pre>
-            <aside class="notes">First clause will handle transitions from idle to half_closed_remote, via HEADERS frame with END_STREAM flag set</aside>
-          </section>
-          <section>
-            <h2>http2_stream</h2>
-<pre><code data-trim contenteditable class="erlang">
-recv_frame(F={_FH = #frame_header{
-              stream_id=StreamId,
-              type=?HEADERS
-             }, _Payload},
-           State = #stream_state{state=idle}) ->
-    State#stream_state{
-      stream_id = StreamId,
-      state = open,
-      incoming_frames = [F]
-     };
-</code></pre>
-            <aside class="notes">This one goes to open, because it's a headers frame, but not the end of stream</aside>
-          </section>
+          <h2>THANKS!</h2>
+          <p>p.s. there are a bunch of references later after this</p>
         </section>
-
         <section>
           <section>
             <h2>References</h2>
@@ -1751,9 +1758,7 @@ recv_frame(F={_FH = #frame_header{
           </section>
         </section>
 
-        <section>
-          <h2>THANKS!</h2>
-        </section>
+
       </div>
 
 

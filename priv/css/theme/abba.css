@@ -234,28 +234,28 @@ b {
  * NAVIGATION CONTROLS
  *********************************************/
 .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
-  border-right-color: #42affa; }
+  border-right-color: #b89c30; }
 
 .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
-  border-left-color: #42affa; }
+  border-left-color: #b89c30; }
 
 .reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
-  border-bottom-color: #42affa; }
+  border-bottom-color: #b89c30; }
 
 .reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled {
-  border-top-color: #42affa; }
+  border-top-color: #b89c30; }
 
 .reveal .controls div.navigate-left.enabled:hover {
-  border-right-color: #8dcffc; }
+  border-right-color: red; }
 
 .reveal .controls div.navigate-right.enabled:hover {
-  border-left-color: #8dcffc; }
+  border-left-color: red; }
 
 .reveal .controls div.navigate-up.enabled:hover {
-  border-bottom-color: #8dcffc; }
+  border-bottom-color: red; }
 
 .reveal .controls div.navigate-down.enabled:hover {
-  border-top-color: #8dcffc; }
+  border-top-color: red; }
 
 /*********************************************
  * PROGRESS BAR
@@ -264,7 +264,7 @@ b {
   background: rgba(0, 0, 0, 0.2); }
 
 .reveal .progress span {
-  background: #42affa;
+  background: #b89c30;
   -webkit-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
   -moz-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
   transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985); }
@@ -273,4 +273,4 @@ b {
  * SLIDE NUMBER
  *********************************************/
 .reveal .slide-number {
-  color: #42affa; }
+  color: #b89c30; }
