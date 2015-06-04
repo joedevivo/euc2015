@@ -65,8 +65,7 @@
               <li>When that's done, Connection over</li>
             </ul>
             <aside class="notes">
-              I would have read the spec, but I was busy being 15 and not willing to pay the $5/mo my ISP wanted for "world wide web".
-              I had gopher included for free anyway!
+              I start here just to show how simple it was. And...
             </aside>
           </section>
 
@@ -89,6 +88,7 @@
               <li>Response Codes</li>
               <li>Serves file types other than HTML</li>
             </ul>
+            <aside class="notes">Supporting non-HTML files took the "HT" out of "HTTP"</aside>
           </section>
 
           <section>
@@ -102,8 +102,7 @@
             </ul>
 
             <aside class="notes">
-              This is the first really real spec. I'd written HTML by this point, which I guess means I've used HTTP/0.9
-              What, you didn't write HTML freshman year?
+              Still plain text.
             </aside>
           </section>
 
@@ -111,7 +110,7 @@
             <h2>HTTP/1.0</h2>
             <p>It really wasn't a standard</p>
             <aside class="notes">
-              Kind of a reverse spec of everything that was already happening. Supporting non-HTML files took the "HT" out of "HTTP"
+              Kind of a reverse spec of everything that was already happening.
             </aside>
           </section>
         </section>
@@ -138,7 +137,7 @@
           </ul>
 
           <aside class="notes">
-            Pipelining is not without it's problems
+            Chunked encoding for unknown content lengths. headers after the body. Point is, there's a lot added to 1.1.
           </aside>
         </section>
 
@@ -154,7 +153,7 @@
               <li>Still one header per line</li>
               <li>Still 2x CRLF to terminate</li>
             </ul>
-            <h4>Possible Chuncked Data</h4>
+            <h4>Possible Chunked Data</h4>
           </section>
           <section>
             <h2>HTTP/1.1 Response</h2>
@@ -162,7 +161,7 @@
               <li>Still starts with a response code</li>
               <li>Still has one response header per line</li>
             </ul>
-            <h4>Possible Chuncked Data</h4>
+            <h4>Possible Chunked Data</h4>
           </section>
           <section>
             <h2>Connection not closed!</h2>
@@ -174,12 +173,27 @@
             <li>Response</li>
             <li>Repeat</li>
             </ul>
+            <p>All on one connection!</p>
+            <p>Act now! Supplies are limited!</p>
+            <aside class="notes">Really, it's a problem.</aside>
           </section>
-        </section>
+          <section>
+            <h2>Side note on HTTP/1.0</h2>
+            <p>Keepalive connections were backported to HTTP/1.0, but it's disabled by default</p>
+          </section>
+          <section>
+            <h2>HTTP/1.1 Spec is HUGE</h2>
+            <p>In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages</p>
+          </section>
 
-        <section>
-          <h2>Side note on HTTP/1.0</h2>
-          <p>Keepalive connections were backported to HTTP/1.0, but it's disabled by default</p>
+          <section>
+            <h2>Many HTTP/1.1 Features are OPTIONAL</h2>
+            <p>Like Pipelining</p>
+            <p>Very rare to find a single product implementing the full feature set</p>
+            <aside class="notes">
+              that means a lot software talking to each other, that have different feature sets
+            </aside>
+          </section>
         </section>
 
         <section>
@@ -203,64 +217,68 @@
               <li>Most browsers disable pipelining by default</li>
             </ul>
           </section>
+          <section>
+            <h2>Performance Hacks</h2>
+            <ul>
+              <li>Spriting</li>
+              <li>Inlining</li>
+              <li>Concatenation</li>
+              <li>Sharding</li>
+            </ul>
+            <aside class="notes">
+              Spriting/Inlinging - Different ways of serving a large file, and then displaying different parts in differnt places.
+              Concatenation - Manually merging javascript files, so they're one file
+              Sharding - Different files on different servers = more connections open
+            </aside>
+          </section>
+
+          <section>
+            <h2>Transfer Sizes</h2>
+            <h2>Dec/2010 - Apr/2015</h2>
+            <img src="./img/chart2.png"/>
+            <p>Transfer sizes and quantities are going UP!</p>
+          </section>
         </section>
 
         <section>
-          <h2>HTTP/1.1 Spec is HUGE</h2>
-          <p>In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages</p>
-        </section>
+          <section>
+            <h2>HTTP/2 Abstract</h2>
+            <p>
+  This specification describes an optimized expression of the semantics
+  of the Hypertext Transfer Protocol (HTTP), referred to as HTTP
+  version 2 (HTTP/2).  HTTP/2 enables a <b>more efficient use of network
+  resources</b> and a <b>reduced perception of latency</b> by introducing <b>header
+  field compression</b> and <b>allowing multiple concurrent exchanges on the
+  same connection</b>.  It also introduces <b>unsolicited push of
+  representations from servers</b> to clients.
+  </p><p>
+  This specification is an alternative to, but does not obsolete, the
+  HTTP/1.1 message syntax.  <b>HTTP’s existing semantics remain unchanged.</b>
+  </p>
+          </section>
 
-        <section>
-          <h2>Many HTTP/1.1 Features are OPTIONAL</h2>
-          <p>Like Pipelining</p>
-          <p>Very rare to find a single product implementing the full feature set</p>
-          <aside class="notes">
-            that means a lot software talking to each other, that have different feature sets
-          </aside>
-        </section>
+          <section>
+            <h2>Goals of an HTTP Update</h2>
+            <ul>
+              <li>more efficient use of network resources</li>
+              <li>reduced perception of latency</li>
+              <li>header field compression</li>
+              <li>allowing multiple concurrent exchanges on the same connection</li>
+              <li>unsolicited push of representations from servers</li>
+              <li>HTTP’s existing semantics remain unchanged.</li>
+            </ul>
+          </section>
 
-        <section>
-          <h2>Performance Hacks</h2>
-          <ul>
-            <li>Spriting</li>
-            <li>Inlining</li>
-            <li>Concatenation</li>
-            <li>Sharding</li>
-          </ul>
-          <aside class="notes">
-            Spriting/Inlinging - Different ways of serving a large file, and then displaying different parts in differnt places.
-            Concatenation - Manually merging javascript files, so they're one file
-            Sharding - Different files on different servers = more connections open
-          </aside>
-        </section>
+          <section>
+            <h2>SPDY</h2>
+            <p>Google tried to fix this and pretty much proved it could work</p>
+          </section>
 
-        <section>
-          <h2>Transfer Sizes</h2>
-          <h2>Dec/2010 - Apr/2015</h2>
-          <img src="./img/chart2.png"/>
-          <p>Transfer sizes and quantities are going UP!</p>
+          <section>
+            <h2>s/SPDY\/3/http2 draft-00</h2>
+            <p>One day, the SPDY/3 draft became the HTTP/2 draft</p>
+          </section>
         </section>
-
-        <section>
-          <h2>Goals of an HTTP Update</h2>
-          <ul>
-            <li>Less round trip time Sensitivity</li>
-            <li>Fix pipelining</li>
-            <li>Discourage multiple connections</li>
-            <li>Keep existing semantics</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>SPDY</h2>
-          <p>Google tried to fix this and pretty much proved it could work</p>
-        </section>
-
-        <section>
-          <h2>s/SPDY\/3/http2 draft-00</h2>
-          <p>One day, the SPDY/3 draft became the HTTP/2 draft</p>
-        </section>
-
         <section>
           <h2>HTTP/2</h2>
           <p>
@@ -295,12 +313,13 @@
           <section>
             <h2>Technically that means</h2>
             <ul>
-              <li>RFC7231: HTTP/1.1 Semantics and Content</li>
-              <li>RFC7232: HTTP/1.1 Conditional Request</li>
-              <li>RFC7233: HTTP/1.1 Range Requests</li>
-              <li>RFC7234: HTTP/1.1 Chaching</li>
-              <li>RFC7235: HTTP/1.1 Authentication</li>
-              <li>And parts of RFC7230: HTTP/1.1 Mesage Syntax and Routing</li>
+
+              <li><a href="http://tools.ietf.org/html/rfc7231">RFC 7231</a>: HTTP/1.1 Semantics and Content</li>
+              <li><a href="http://tools.ietf.org/html/rfc7232">RFC 7232</a>: HTTP/1.1 Conditional Request</li>
+              <li><a href="http://tools.ietf.org/html/rfc7233">RFC 7233</a>: HTTP/1.1 Range Requests</li>
+              <li><a href="http://tools.ietf.org/html/rfc7234">RFC 7234</a>: HTTP/1.1 Caching</li>
+              <li><a href="http://tools.ietf.org/html/rfc7235">RFC 7235</a>: HTTP/1.1 Authentication</li>
+              <li>And parts of <a href="http://tools.ietf.org/html/rfc7230">RFC 7230</a>: HTTP/1.1 Mesage Syntax and Routing</li>
             </ul>
           </section>
         </section>
@@ -340,11 +359,69 @@
             </p>
           </section>
           <section>
-            <h2>There Are Two Contexts</h2>
-            <p>Two for each peer</p>
-            <p>Maybe easier to think of as one for Requests and one for Responses</p>
+            <h2>There Are Four Contexts!</h2>
+            <p>Given two peers: X &amp; Y, connected over C1 </p>
+            <ul>
+              <li>Context A1: encoding outbound requests on X to Y over C1</li>
+              <li>Context A2: decoding inbound requests on Y from X over C1</li>
+              <li>Context B1: encoding outbound responses on Y to X over C1</li>
+              <li>Context B2: decoding inbound responses on X from Y over C1</li>
+            </ul>
+
+            <aside class="notes">
+              Two for each peer, Maybe easier to think of as one for Requests and one for Responses. If you open multiple connections, there will be 4 contexts per connection, but you wouldn't do that because you can multiplex :D
+            </aside>
           </section>
           <section>
+            <h2>The Basic Case</h2>
+<pre>                    +---------------+           +---------------+
+                    |Peer X (Client)|           |Peer Y (Server)|
++-------------------+---------------+           +---------------+-------------------+
+|                                   |           |                                   |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+| |Plain Req |   |Encode (A1)|   | Encoded Request |   |Decode (A2)|   |Plain Req | |
+| | Headers  |-->|  Context  |-->|     Headers     |-->|  Context  |-->| Headers  | |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+|                                   |   Cloud   |                                   |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+| |Plain Resp|   |Decode (B2)|   |Encoded Response |   |Encode (B1)|   |Plain Resp| |
+| | Headers  |<--|  Context  |<--|     Headers     |<--+- Context  |<--| Headers  | |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+|                                   |           |                                   |
+|                                   |           |                                   |
++-----------------------------------+           +-----------------------------------+</pre>
+          </section>
+          <section>
+            <h2>A More interesting case</h2>
+            <pre>                    +---------------+           +---------------+
+                    |Peer X (Client)|           |Peer Y (Server)|
++-------------------+---------------+           +---------------+-------------------+
+|                                   |           |                                   |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+| |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
+| |Headers #1|-->|           |-->|   Headers #1    |-->|           |-->|Headers #1| |
+| +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
+| +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
+| |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
+| |Headers #2|-->|           |-->|   Headers #2    |-->|           |-->|Headers #2| |
+| +----------+   |Encode (A1)|   +--+-----------+--+   |Decode (A2)|   +----------+ |
+| +----------+   |  Context  |   +--+-----------+--+   |  Context  |   +----------+ |
+| |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
+| |Headers #2|-->|           |-->|   Headers #3    |-->|           |-->|Headers #3| |
+| +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
+| +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
+| |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
+| |Headers #2+-->|           |-->|   Headers #4    |-->|           |-->|Headers #4| |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+|                                   |           |                                   |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
+| |Plain Resp|   |Decode (B2)|   |Encoded Response |   |Encode (B1)|   |Plain Resp| |
+| | Headers  |<--|  Context  |<--|     Headers     |<--|  Context  |<--| Headers  | |
+| +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
++-----------------------------------+           +-----------------------------------+
+</pre></section>
+          <section>
+
             <h2>The Static Table</h2>
             <!--table>
               <thead>
@@ -374,26 +451,28 @@
               </tbody>
             </table-->
 <pre>
-            +-------+--------------------+---------------+
-            | Index | Header Name        | Header Value  |
-            +-------+--------------------+---------------+
-            | 1     | :authority         |               |
-            | 2     | :method            | GET           |
-            | 3     | :method            | POST          |
-            | 4     | :path              | /             |
-            | 5     | :path              | /index.html   |
-            | 6     | :scheme            | http          |
-            | 7     | :scheme            | https         |
-            | 8     | :status            | 200           |
-            | 9     | :status            | 204           |
-            | 10    | :status            | 206           |
-            | 11    | :status            | 304           |
-            | 12    | :status            | 400           |
-            | 13    | :status            | 404           |
-            | 14    | :status            | 500           |
-            | 15    | accept-charset     |               |
-            | 16    | accept-encoding    | gzip, deflate |
-                                ...
+                    +-------+--------------------+---------------+
+                    | Index | Header Name        | Header Value  |
+                    +-------+--------------------+---------------+
+                    | 1     | :authority         |               |
+                    | 2     | :method            | GET           |
+                    | 3     | :method            | POST          |
+                    | 4     | :path              | /             |
+                    | 5     | :path              | /index.html   |
+                    | 6     | :scheme            | http          |
+                    | 7     | :scheme            | https         |
+                    | 8     | :status            | 200           |
+                    | 13    | :status            | 404           |
+                    | 14    | :status            | 500           |
+                    | 15    | accept-charset     |               |
+                    | 16    | accept-encoding    | gzip, deflate |
+                                        ...
+                    | 57    | transfer-encoding  |               |
+                    | 58    | user-agent         |               |
+                    | 59    | vary               |               |
+                    | 60    | via                |               |
+                    | 61    | www-authenticate   |               |
+                    +-------+--------------------+---------------+
 </pre>
             <aside class="notes">
               These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
@@ -428,10 +507,10 @@
           <section>
             <h2>Indexed Header Field</h2>
             <pre>
-                   0   1   2   3   4   5   6   7
-                 +---+---+---+---+---+---+---+---+
-                 | 1 |        Index (7+)         |
-                 +---+---------------------------+
+                            0   1   2   3   4   5   6   7
+                          +---+---+---+---+---+---+---+---+
+                          | 1 |        Index (7+)         |
+                          +---+---------------------------+
             </pre>
             <aside class="notes">
               A Name/Value pair already in the table
@@ -441,14 +520,14 @@
           <section>
             <h2>Literal Header Field w/ Index</h2>
             <pre>
-                   0   1   2   3   4   5   6   7
-                 +---+---+---+---+---+---+---+---+
-                 | 0 | 1 |      Index (6+)       |
-                 +---+---+-----------------------+
-                 | H |     Value Length (7+)     |
-                 +---+---------------------------+
-                 | Value String (Length octets)  |
-                 +-------------------------------+
+                            0   1   2   3   4   5   6   7
+                          +---+---+---+---+---+---+---+---+
+                          | 0 | 1 |      Index (6+)       |
+                          +---+---+-----------------------+
+                          | H |     Value Length (7+)     |
+                          +---+---------------------------+
+                          | Value String (Length octets)  |
+                          +-------------------------------+
             </pre>
             <aside class="notes">
               A Name that's already in the table, but a different value
@@ -458,18 +537,18 @@
           <section>
             <h2>Literal Header Field w/ Index</h2>
             <pre>
-                   0   1   2   3   4   5   6   7
-                 +---+---+---+---+---+---+---+---+
-                 | 0 | 1 |           0           |
-                 +---+---+-----------------------+
-                 | H |     Name Length (7+)      |
-                 +---+---------------------------+
-                 |  Name String (Length octets)  |
-                 +---+---------------------------+
-                 | H |     Value Length (7+)     |
-                 +---+---------------------------+
-                 | Value String (Length octets)  |
-                 +-------------------------------+
+                            0   1   2   3   4   5   6   7
+                          +---+---+---+---+---+---+---+---+
+                          | 0 | 1 |           0           |
+                          +---+---+-----------------------+
+                          | H |     Name Length (7+)      |
+                          +---+---------------------------+
+                          |  Name String (Length octets)  |
+                          +---+---------------------------+
+                          | H |     Value Length (7+)     |
+                          +---+---------------------------+
+                          | Value String (Length octets)  |
+                          +-------------------------------+
             </pre>
             <aside class="notes">
               Neither the name nor value are in the table
@@ -498,42 +577,40 @@
           </section>
           <section>
 <pre>
-                                                        code
-                          code as bits                 as hex   len
-        sym              aligned to MSB                aligned   in
-                                                       to LSB   bits
-       (  0)  |11111111|11000                             1ff8  [13]
-       (  1)  |11111111|11111111|1011000                7fffd8  [23]
-       (  2)  |11111111|11111111|11111110|0010         fffffe2  [28]
-       (  3)  |11111111|11111111|11111110|0011         fffffe3  [28]
-       (  4)  |11111111|11111111|11111110|0100         fffffe4  [28]
-                               ...
-   '0' ( 48)  |00000                                         0  [ 5]
-   '1' ( 49)  |00001                                         1  [ 5]
-   '2' ( 50)  |00010                                         2  [ 5]
-   '3' ( 51)  |011001                                       19  [ 6]
-   '4' ( 52)  |011010                                       1a  [ 6]
-                               ...
-   'X' ( 88)  |11111100                                     fc  [ 8]
-   'Y' ( 89)  |1110011                                      73  [ 7]
-   'Z' ( 90)  |11111101                                     fd  [ 8]
-   '[' ( 91)  |11111111|11011                             1ffb  [13]
-   '\' ( 92)  |11111111|11111110|000                     7fff0  [19]
-   ']' ( 93)  |11111111|11100                             1ffc  [13]
-   '^' ( 94)  |11111111|111100                            3ffc  [14]
-   '_' ( 95)  |100010                                       22  [ 6]
-   '`' ( 96)  |11111111|1111101                           7ffd  [15]
-   'a' ( 97)  |00011                                         3  [ 5]
-   'b' ( 98)  |100011                                       23  [ 6]
-   'c' ( 99)  |00100                                         4  [ 5]
-   'd' (100)  |100100                                       24  [ 6]
-   'e' (101)  |00101                                         5  [ 5]
+                                                              code
+                                code as bits                 as hex   len
+              sym              aligned to MSB                aligned   in
+                                                             to LSB   bits
+             (  0)  |11111111|11000                             1ff8  [13]
+             (  1)  |11111111|11111111|1011000                7fffd8  [23]
+             (  2)  |11111111|11111111|11111110|0010         fffffe2  [28]
+             (  3)  |11111111|11111111|11111110|0011         fffffe3  [28]
+             (  4)  |11111111|11111111|11111110|0100         fffffe4  [28]
+                                     ...
+         '0' ( 48)  |00000                                         0  [ 5]
+         '1' ( 49)  |00001                                         1  [ 5]
+         '2' ( 50)  |00010                                         2  [ 5]
+         '3' ( 51)  |011001                                       19  [ 6]
+         '4' ( 52)  |011010                                       1a  [ 6]
+                                     ...
+         'X' ( 88)  |11111100                                     fc  [ 8]
+         'Y' ( 89)  |1110011                                      73  [ 7]
+         'Z' ( 90)  |11111101                                     fd  [ 8]
+         '[' ( 91)  |11111111|11011                             1ffb  [13]
+         '\' ( 92)  |11111111|11111110|000                     7fff0  [19]
+         ']' ( 93)  |11111111|11100                             1ffc  [13]
+         '^' ( 94)  |11111111|111100                            3ffc  [14]
+         '_' ( 95)  |100010                                       22  [ 6]
+         '`' ( 96)  |11111111|1111101                           7ffd  [15]
+         'a' ( 97)  |00011                                         3  [ 5]
+         'b' ( 98)  |100011                                       23  [ 6]
+         'c' ( 99)  |00100                                         4  [ 5]
+         'd' (100)  |100100                                       24  [ 6]
+         'e' (101)  |00101                                         5  [ 5]
 </pre>
-          </section>
-          <section>
-            <p>
+            <aside class="notes">
               See?! Weird things like "non visualizable ASCII code 3" are 28 bits, but useful things like "1" are 5 bits. We're all about optimizing the wire
-            </p>
+            </aside>
           </section>
           <section>
             <h2>Examples</h2>
@@ -576,11 +653,12 @@ Headers3 = [
           <section>
             <h2>Request 1</h2>
             <pre><code data-trim contenteditable class="erlang">
-Headers1 = [
-           {<<":path">>, <<"/">>},
-           {<<"user-agent">>, <<"my cool browser">>},
-           {<<"x-custom-header">>, <<"some custom value">>}
-          ],
+%% Request 1
+                Headers1 = [
+                 {<<":path">>, <<"/">>},
+                 {<<"user-agent">>, <<"my cool browser">>},
+                 {<<"x-custom-header">>, <<"some custom value">>}
+                ],
   </code></pre>
           </section>
           <!--section>
@@ -624,8 +702,8 @@ x-custom-header - "some custom value"
             <h2>R1 Context updates</h2>
 <pre><code data-trim contenteditable class="erlang">
 DynamicTable = [
-  {62,<<"x-custom-header">>,<<"some custom value">>},
-  {63,<<"user-agent">>,     <<"my cool browser">>}
+                {62,<<"x-custom-header">>,<<"some custom value">>},
+                {63,<<"user-agent">>,     <<"my cool browser">>}
 ]
 </code></pre>
             <ul>
@@ -639,11 +717,12 @@ DynamicTable = [
           <section>
             <h2>Request 2</h2>
             <pre><code data-trim contenteditable class="erlang">
-Headers2 = [
-           {<<":path">>, <<"/some_file.html">>},
-           {<<"user-agent">>, <<"my cool browser">>},
-           {<<"x-custom-header">>, <<"some custom value">>}
-          ],
+%% Request 2
+               Headers2 = [
+                {<<":path">>, <<"/some_file.html">>},
+                {<<"user-agent">>, <<"my cool browser">>},
+                {<<"x-custom-header">>, <<"some custom value">>}
+               ],
   </code></pre>
           </section>
           <!--section>
@@ -687,9 +766,9 @@ x-custom-header - "some custom value"
             <h2>R2: Context updates</h2>
 <pre><code data-trim contenteditable class="erlang">
 [
-  {62,<<":path">>,          <<"/some_file.html">>},
-  {63,<<"x-custom-header">>,<<"some custom value">>},
-  {64,<<"user-agent">>,     <<"my cool browser">>}
+                {62,<<":path">>,          <<"/some_file.html">>},
+                {63,<<"x-custom-header">>,<<"some custom value">>},
+                {64,<<"user-agent">>,     <<"my cool browser">>}
 ]
 </code></pre>
             <ul>
@@ -704,11 +783,12 @@ x-custom-header - "some custom value"
           <section>
             <h2>Request 3</h2>
             <pre><code data-trim contenteditable class="erlang">
-Headers3 = [
-           {<<":path">>, <<"/some_file.html">>},
-           {<<"user-agent">>, <<"my cool browser">>},
-           {<<"x-custom-header">>, <<"new value">>}
-          ],
+              %% Request 3
+                    Headers3 = [
+                     {<<":path">>, <<"/some_file.html">>},
+                     {<<"user-agent">>, <<"my cool browser">>},
+                     {<<"x-custom-header">>, <<"new value">>}
+                    ],
   </code></pre>
           </section>
           <!--section>
@@ -767,8 +847,33 @@ x-custom-header - "new value"
               when the sum of the sizes of name/value pairs exceedes the maximum table size, that last header falls off the end. bye!
             </aside>
           </section>
+
         </section>
 
+        <!-- this is an interesting bug, but not something i have time for in this presentation. -->
+        <!--section>
+          <section>
+            <h2>Debugging This Slide Deck</h2>
+            <h2>With Wireshark</h2>
+          </section>
+          <section>
+            <pre>
+        Header: x-custom-header: new value
+            Name Length: 15
+            Name: x-custom-header
+            Value Length: 9
+            Value: new value
+            Representation: Literal Header Field with Incremental Indexing - Indexed Name
+            Index: 63
+            </pre>
+            <aside class="notes">I had such a hard time getting this to appear in wireshark.</aside>
+          </section>
+          <section>
+            <h2>Why?</h2>
+            <p>Index : 63</p>
+            <p>Binary: 111111</p>
+          </section>
+        <section-->
         <!-- Multiplexing -->
         <section>
           <section>
@@ -777,6 +882,13 @@ x-custom-header - "new value"
           <section>
             <h2>Streams</h2>
             <p>There's one connection, streams are logical abstractions across it</p>
+            <p>They have unique identifiers</p>
+            <p>Section 5.1.1 says client initiated stream ids are odd, server's are even</p>
+          </section>
+          <section>
+            <h2>Stream 0</h2>
+            <p>Stream 0 is the meta stream. Frames sent to it apply to the entire connection</p>
+            <p>Some frame types (e.g. Data) can't be sent to stream 0.</p>
           </section>
           <section>
             <h2>Frames</h2>
@@ -790,6 +902,41 @@ x-custom-header - "new value"
           <section>
             <h2>Order?</h2>
             <p>Yes, because the header context is a piece of state, all those HPACK indexes would get out of sync if the client and server processed things in a different order</p>
+          </section>
+          <section>
+            <h2>Order Matters</h2>
+<pre>
++---------------+           +---------------+
+|Peer X (Client)|           |Peer Y (Server)|
++---------------+           +---------------+------------------------------+
+                |           |                                              |
+---------+   +--+-----------+--+              +-----------+   +----------+ |
+         |   | Encoded Request |              |           |   |Plain Req | |
+         |-->|   Headers #1    |------------->|           |-->|Headers #1| |
+         |   +--+-----------+--+              |           |   +----------+ |
+         |   +--+-----------+--+              |           |   <b>+----------+</b> |
+         |   | Encoded Request |              |           |   <b>| Bad Req  |</b> |
+         |-->|   Headers #2    |<b>------\       </b>|           |--><b>|Headers #3|</b> |
+code (A1)|   +--+-----------+--+<b>   ----\-----></b>|Decode (A2)|   <b>+----------+</b> |
+Context  |   +--+-----------+--+<b>  /     \     </b>|  Context  |   +----------+ |
+         |   | Encoded Request |<b>-/       \    </b>|           |   |Bad Req   | |
+         |-->|   Headers #3    |<b>          ---></b>|           |-->|Headers #2| |
+         |   +--+-----------+--+              |           |   +----------+ |
+         |   +--+-----------+--+              |           |   +----------+ |
+         |   | Encoded Request |              |           |   |Plain Req | |
+         |-->|   Headers #4    |------------->|           |-->|Headers #4| |
+---------+   +--+-----------+--+              +-----------+   +----------+ |
+                |           |                                              |
+---------+   +--+-----------+--+              +-----------+   +----------+ |
+code (B2)|   |Encoded Response |              |Encode (B1)|   |Plain Resp| |
+Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
+---------+   +--+-----------+--+              +-----------+   +----------+ |
+----------------+           +----------------------------------------------+</pre>
+          <aside class="notes">We'll explore this case in code!</aside>
+          </section>
+          <section>
+            <h2>Jargon Alert!</h2>
+            <p>A <b>connection</b> has multiple <b>streams</b> which can accept multiple <b>frames</b> in order</p>
           </section>
           <section>
             <h2>Handling</h2>
@@ -941,12 +1088,6 @@ x-custom-header - "new value"
             <h2>Connection and Streams</h2>
             <p>There's a limit advertized to both</p>
           </section>
-
-          <section>
-            <h2>Stream 0</h2>
-            <p>Stream 0 is the meta stream. Frames sent to it apply to the entire connection</p>
-            <p>Some frame types (e.g. Data) can't be sent to stream 0.</p>
-          </section>
         </section>
 
         <section>
@@ -1091,8 +1232,9 @@ handle_info({_, _Socket, &lt;&lt;?PREAMBLE,Bin/bits&gt;&gt;}, _, S) ->
             <ol>
               <li>Send our server SETTINGS frame</li>
               <li>Wait for client SETTINGS frame</li>
-              <li>and client's SETTINGS ACK</li>
-              <li>Backlog any frames before 2 and 3 are done</li>
+              <li>Wait client's SETTINGS ACK</li>
+              <li>Send ACK of client settings</li>
+              <li>Backlog any frames before 3 and 4 are done</li>
               <li>Transition to connected state</li>
             </ol>
           </section>
@@ -1226,11 +1368,11 @@ END_HEADERS (0x4):  When set, bit 2 indicates that this frame
   contains an entire header block (Section 4.3) and is not followed
   by any CONTINUATION frames.
 
-  A HEADERS frame without the END_HEADERS flag set MUST be followed
-  by a CONTINUATION frame for the same stream.  A receiver MUST
-  treat the receipt of any other type of frame or a frame on a
-  different stream as a connection error (Section 5.4.1) of type
-  PROTOCOL_ERROR.
+A HEADERS frame without the END_HEADERS flag set MUST be followed
+by a CONTINUATION frame for the same stream.  A receiver MUST
+treat the receipt of any other type of frame or a frame on a
+different stream as a connection error (Section 5.4.1) of type
+PROTOCOL_ERROR.
 </pre>
           </section>
           <section>
@@ -1295,21 +1437,33 @@ continuation(_, State) ->
     go_error(?PROTOCOL_ERROR, State).
 </code></pre>
           </section>
+          <section>
+            <h2>Take out the bad frame</h2>
+<pre><code data-trim contenteditable class="erlang">
+    Resp = http2c:get_frames(Client, 3),
+    ct:pal("Resp: ~p", [Resp]),
+    ?assertEqual(2, length(Resp)).
+</code></pre>
+          <aside class="notes">If I took out the bad frame, which I did for another test, I'd assert this instead</aside>
         </section>
 
         <section>
           <section>
-            <h2>FRAMES</h2>
+            <h2>chatterbox_fsm</h2>
+            <p>Routing frames in the connected state</p>
           </section>
+
           <section>
-            <h2>http2_frame</h2>
 <pre><code data-trim contenteditable class="erlang">
--callback read_binary(Bin::binary(),
-                      Header::frame_header()) -&gt;
-    {ok, payload(), Remainder::binary()} | {error, term()}.
--callback to_binary(payload()) -&gt; iodata().
+-spec route_frame(frame(), #chatterbox_fsm_state{}) -&gt;
+    {next_state, connected, #chatterbox_fsm_state{}}.
 </code></pre>
           </section>
+          <section>
+            <h2>FRAMES</h2>
+            <p>The http2_frame module</p>
+          </section>
+
           <section>
 <pre><code data-trim contenteditable class="erlang">
 -spec from_binary(binary()) -&gt; [{frame_header(), payload()}].
@@ -1321,11 +1475,29 @@ from_binary(&lt;&lt;&gt;&gt;, Acc) -&gt;
 from_binary(Bin, Acc) -&gt;
     {Header, PayloadBin} = read_binary_frame_header(Bin),
     {ok, Payload, Rem} = read_binary_payload(PayloadBin, Header),
-    lager:debug(format({Header, Payload})),
     from_binary(Rem, [{Header, Payload}|Acc]).
 </code></pre>
+            <aside class="notes">
+              The binary passed in can be more than one frame. I haven't handled the case where a partial frame arrives. I've started that work in the client, so... soon?
+            </aside>
           </section>
+
           <section>
+            <h2>The Front 9</h2>
+          </section>
+
+          <section>
+<pre>
+        +-----------------------------------------------+
+        |                 Length (24)                   |
+        +---------------+---------------+---------------+
+        |   Type (8)    |   Flags (8)   |
+        +-+-------------+---------------+-------------------------------+
+        |R|                 Stream Identifier (31)                      |
+        +=+=============================================================+
+        |                   Frame Payload (0...)                      ...
+        +---------------------------------------------------------------+
+  </pre>
 <pre><code data-trim contenteditable class="erlang">
 -spec read_binary_frame_header(binary()) -&gt; {frame_header(), binary()}.
 read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/bits&gt;&gt;) -&gt;
@@ -1337,8 +1509,23 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
     },
     {Header, Rem}.
 </code></pre>
-            <aside class="notes">So easy!</aside>
+            <aside class="notes">The first 9 bytes better be a frame header. The following bytes depend on it.</aside>
           </section>
+
+          <section>
+            <h2>The Following Bytes</h2>
+            <p>http2_frame behaviour</p>
+<pre><code data-trim contenteditable class="erlang">
+-callback read_binary(Bin::binary(),
+                      Header::frame_header()) -&gt;
+    {ok, payload(), Remainder::binary()} | {error, term()}.
+-callback to_binary(payload()) -&gt; iodata().
+</code></pre>
+            <aside class="notes">
+              These callbacks are for deserialzing payloads of specific frame types
+            </aside>
+          </section>
+
           <section>
 <pre><code data-trim contenteditable class="erlang">
 -spec read_binary_payload(binary(), frame_header()) -&gt;
@@ -1351,6 +1538,8 @@ read_binary_payload(Socket, Header = #frame_header{type=?HEADERS}) -&gt;
 </code></pre>
             <aside class="notes"></aside>
           </section>
+
+
           <section>
             <h2>chatterbox_fsm</h2>
           </section>
@@ -1583,7 +1772,7 @@ recv_frame(F={_FH = #frame_header{
         progress: true,
         history: true,
         center: true,
-
+        slideNumber: true,
         transition: 'slide', // none/fade/slide/convex/concave/zoom
 
         // Optional reveal.js plugins

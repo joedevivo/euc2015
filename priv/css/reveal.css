@@ -118,7 +118,7 @@ body {
   visibility: visible; }
 
 .reveal .slides section .fragment.highlight-red.visible {
-  color: #ff2c2d; }
+    color: #b89c30; }
 
 .reveal .slides section .fragment.highlight-green.visible {
   color: #17ff2e; }

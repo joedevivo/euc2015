@@ -17,6 +17,9 @@ body {
   background: #000;
   background-color: #000;}
 
+b {
+    color: #b89c30;
+}
 .reveal {
   font-family: 'Source Sans Pro', Helvetica, sans-serif;
   font-size: 38px;
