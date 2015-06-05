@@ -50,6 +50,11 @@
         </section>
 
         <section>
+          <h2>Chatterbox</h2>
+          <p><a href="http://github.com/joedevivo/chatterbox">Here's the code!</a></p>
+        </section>
+
+        <section>
           <h2>A Brief History of HTTP</h2>
           <ul>
             <li>1991 - <a href="http://www.w3.org/Protocols/HTTP/AsImplemented.html">RFC-NULL: HTTP/0.9</a></li>
@@ -729,7 +734,7 @@ x-custom-header - "new value"
         Header: x-custom-header: new value
             Representation: Literal Header Field with Incremental Indexing - Indexed Name
             Index: <b>63</b>
-            Value: new value
+            Value: <b>new value</b>
 </pre>
           </section>
           <section>
@@ -1115,7 +1120,7 @@ route_frame(F={H=#frame_header{stream_id=StreamId}, _Payload},
             <aside class="notes">
               Create a new stream because while in the idle state, we don't have a structure for it. Pull the headers of the frame with decode, and apply this frame to the newly created stream state
 
-              This is just the handler for data frames coming in on the chatterbox_fsm connection level, we pull the existing stream out of the chatterbox state, apply a stream transition to it, and put that stream back in the state</aside>
+              This is just the handler for data frames coming in on the connection level, we pull the existing stream out of the chatterbox state, apply a stream transition to it, and put that stream back in the state</aside>
           </section>
           <section>
             <h2>http2_stream</h2>
@@ -1222,6 +1227,8 @@ recv_frame(F={_FH = #frame_header{
           </section>
 
           <section>
+            <!-- TODO: This slide is about a recv, but then the next one is about a send. Unfortunately, send doesn't work right now -->
+            <!-- TODO: go through slides and make sure when code switches to a different module, put that module name on the slide -->
             <h4>Routing a DATA frame: connection level</h4>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L270-L297">http2_connection:route_frame</a>
 <pre><code class="erlang">
@@ -1287,8 +1294,17 @@ send_frame(F={#frame_header{
        queued_frames=QF ++ [F]
       };
 </code></pre>
-            <aside class="notes">If you notice here, I'm just queuing up the frames I can't receive. The spec says I MAY return a flow control error code here if I want.</aside>
+            <aside class="notes">If you notice here, I'm just queuing up the frames I can't send.</aside>
           </section>
+          <section>
+            <h2>What to do with those queued frames?</h2>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_stream.erl#L85-L107">recv_frame(?WINDOW_UPDATE)</a>
+<pre><code class="erlang">
+
+</code></pre>
+            <aside class="notes">put the stream back in the state, and store the new recv_window size.</aside>
+          </section>
+
           <section>
 <pre><code class="erlang">
     {next_state, connected, S#http2_connection_state{
@@ -1347,15 +1363,6 @@ NewStream = lists:foldl(
           </section>
         </section>
 
-        <section>
-          <h2>Chatterbox</h2>
-          <p><a href="http://github.com/joedevivo/chatterbox">Chatterbox</a></p>
-        </section>
-
-        <section>
-          <h2>Chatterbox FSM</h2>
-          <h4>A Connection State Machine</h4>
-        </section>
         <section>
           <section>
             <h2>Without a connection, what can we do?</h2>
@@ -1461,7 +1468,7 @@ handle_info({_, _Socket, &lt;&lt;?PREAMBLE,Bin/bits&gt;&gt;}, _, S) ->
 
           <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L93">http2_connection:settings_handshake/2</a>
-<pre><code data-trim  class="erlang">
+<pre><code data-trim style="max-height:100%;" class="erlang">
 settings_handshake({start_frame, Bin}, S = #http2_connection_state{
                                               connection=#connection_state{
                                                             socket=Socket,
@@ -1613,7 +1620,7 @@ PROTOCOL_ERROR.
 </pre>
           </section>
           <section>
-<pre><code class="erlang">
+<pre><code style="max-height:100%;" class="erlang">
 Frames = [
    {#frame_header{length=8,type=?HEADERS,stream_id=3},
     #headers{ block_fragment=H1 }},
@@ -1693,6 +1700,7 @@ Resp = http2c:get_frames(Client, 3),
         <section>
           <h2>THANKS!</h2>
           <p>p.s. there are a bunch of references later after this</p>
+          <p><a href="http://github.com/joedevivo/chatterbox">Here's the code again!</a></p>
         </section>
         <section>
           <section>
