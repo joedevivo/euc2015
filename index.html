@@ -58,7 +58,6 @@
             <li>1999 - <a href="http://tools.ietf.org/html/rfc2616">RFC-2616: HTTP/1.1 (again)</a></li>
             <li>2014 - <a href="http://tools.ietf.org/html/rfc7230">RFC-7230-5: HTTP/1.1 (again (again))!</a></p>
           </ul>
-          <p>I</p>
           <aside class="notes">
             I start here just to show how simple it was. HTTP/1.1 was here to resolve ambiguities in HTTP/1.0 and introduce performance optimizations. In 2014's special edition remaster, HTTP/1.1 was split into SIX RFCs totaling over 292 pages
           </aside>
@@ -94,7 +93,7 @@
               <li>Sharding</li>
             </ul>
             <aside class="notes">
-              Spriting/Inlinging - Different ways of serving a large file, and then displaying different parts in differnt places.
+              Spriting/Inlinging - Different ways of serving a large file, and then displaying different parts in different places.
               Concatenation - Manually merging javascript files, so they're one file
               Sharding - Different files on different servers = more connections open
             </aside>
@@ -201,6 +200,7 @@
             <p>Uses "Upgrade: " header.</p>
             <p>HTTP/2 servers respond with status code </p>
             <pre>101 Switching</pre>
+            <aside class="notes">I've punted on the implementation of this for now</aside>
           </section>
         </section>
 
@@ -322,6 +322,7 @@ StaticTable = hpack:new_decode_context(),
             <p>
               Bounded by size in HTTP/2 connection settings as a security precaution
             </p>
+            <aside class="notes">Take a bite out of CRIME</aside>
           </section>
 
           <section>
@@ -407,7 +408,7 @@ NewContext =/= StaticTable,
 | +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
 | +----------+   |           |   +--+-----------+--+   |           |   +----------+ |
 | |Plain Req |   |           |   | Encoded Request |   |           |   |Plain Req | |
-| |Headers #4+-->|           |-->|   Headers #4    |-->|           |-->|Headers #4| |
+| |Headers #4|-->|           |-->|   Headers #4    |-->|           |-->|Headers #4| |
 | +----------+   +-----------+   +--+-----------+--+   +-----------+   +----------+ |
 +-----------------------------------+           +-----------------------------------+
 </pre></section>
@@ -486,6 +487,7 @@ NewContext =/= StaticTable,
 
           <section>
             <h4 style="color: #b40f29";>Erlang</h4>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/hpack.erl#L43-L75">hpack:decode</a>
 <pre><code data-trim contenteditable class="erlang">
 decode(<<>>, HeadersAcc, C) -> {HeadersAcc, C};
 %% First bit is '1', so it's an 'Indexed Header Feild'
@@ -512,7 +514,7 @@ decode(<<2#001:3,_/bits>>=B, HeaderAcc, Context) ->
             <aside class="notes">Did you see that "H" bit? It means the string is huffman encoded. It's an option for saying more popular characters in less bytes
             </aside>
           </section>
-          <section>
+          <!--section>
 <pre>
                                                               code
                                 code as bits                 as hex   len
@@ -548,11 +550,11 @@ decode(<<2#001:3,_/bits>>=B, HeaderAcc, Context) ->
             <aside class="notes">
               See?! Weird things like "non visualizable ASCII code 3" are 28 bits, but useful things like "1" are 5 bits. We're all about optimizing the wire
             </aside>
-          </section>
+          </section-->
           <section>
             <h2>Examples</h2>
             <p>
-              There are tons of cool examples in <a href="http://tools.ietf.org/html/rfc7541#appendix-C">HPACK: Appendix C</a>. They're so good that I turned them into <a href="https://github.com/joedevivo/chatterbox/blob/master/test/hpack_tests.erl#L60">EUnit tests</a>
+              There are tons of cool examples in <a href="http://tools.ietf.org/html/rfc7541#appendix-C">HPACK: Appendix C</a>. They're so good that I turned them into <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/test/hpack_tests.erl#L60">EUnit tests</a>
             </p>
           </section>
         </section>
@@ -834,7 +836,7 @@ code (B2)|   |Encoded Response |              |Encode (B1)|   |Plain Resp| |
 Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
 ---------+   +--+-----------+--+              +-----------+   +----------+ |
 ----------------+           +----------------------------------------------+</pre>
-          <aside class="notes">We'll explore this case in code!</aside>
+          <aside class="notes">We'll explore this case in code! Don't cross the streams</aside>
           </section>
           <section>
             <h2>Jargon Alert!</h2>
@@ -928,6 +930,7 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
 </pre>
 
             <h4 style="color: #b40f29";>Erlang</h4>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_frame.erl#L70-L78">http2_frame:read_binary_frame_header/1</a>
 <pre><code class="erlang">
 -spec read_binary_frame_header(binary()) -&gt; {frame_header(), binary()}.
 read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/bits&gt;&gt;) -&gt;
@@ -1002,47 +1005,31 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
 
         <section>
           <section>
-            <h2>Flow Control</h2>
-            <p>Applied to both the Connection as a whole and Individual Streams</p>
+            <h2>Routing Individual Frames</h2>
           </section>
 
           <section>
-            <h2>Only Applies to Data Frames</h2>
-            <aside class="notes">Allows control frames to get in</aside>
+            <h2>http2_connection</h2>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl">http2_connection.erl</a>
+            <aside class="notes">
+              a gen_fsm that is the owner of the socket. It receives all these frames and has logic for routing them all
+            </aside>
           </section>
 
           <section>
-            <h2>Receiver</h2>
-            <p>Each receiver advertizes how many bytes it can receive</p>
+            <h4>Frame Size Errors</h4>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L260-L266">http2_frame:read_binary_frame_header/1</a>
+<pre><code class="erlang">
+route_frame({#frame_header{length=L}, _},
+            S = #http2_connection_state{
+                   connection=#connection_state{
+                                 recv_settings=#settings{max_frame_size=MFS}
+                                }})
+    when L > MFS ->
+    go_away(?FRAME_SIZE_ERROR, S);
+</code></pre>
+            <aside class="notes">One of least complicated parts of the spec just talks about frame size. One of the settings for the connection sets a max value, and if a frame that's bigger comes over, we're done.</aside>
           </section>
-
-          <section>
-            <h2>Sender</h2>
-            <p>Won't send more than the receiver advertizes</p>
-          </section>
-
-          <section>
-            <h2>WINDOW_UPDATE</h2>
-            <p>
-              The window update frame is sent by the receiver to increase the number of bytes advertized. There is no decrement operation.
-            </p>
-          </section>
-
-          <section>
-            <h2 style="color: #b40f29";>Erlang</h2>
-            <aside class="notes">Pattern match on data frame header length. Maintain credit balance in the FSM state for the connection level. We could have put the stream level credit in the stream's gen_fsm, but we don't have one because...</aside>
-          </section>
-        </section>
-
-        <section>
-          <h2>Prioritization</h2>
-          <p>A client can request that a server prioritizes a certain stream over another.</p>
-          <p>It is built in a tree structure so you can create requests for stream dependencies.</p>
-          <p>Leaves in a tree can have different weights</p>
-          <h4>A server is under no obligation to honor these requests</h4>
-          <aside class="notes">
-            So I punted on it for V1; however, we didn't spawn each stream into it's own gen_fsm explicity so we could have control over priority in a future version.
-          </aside>
         </section>
 
         <section>
@@ -1052,7 +1039,7 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
           <section>
             <h2>http2_stream</h2>
             <p>A Fauxnite State Machine</p>
-            <aside class="notes">A new name for an old idea!</aside>
+            <aside class="notes">A new name for an old idea! When a frame comes in associated with a stream our frame has to route it, and different things happen when streams are in differnt states</aside>
           </section>
           <section>
             <pre>
@@ -1085,7 +1072,7 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
     `----------------------->|        |&lt;----------------------'
                              +--------+
             </pre>
-            <aside class="notes">All these transitions are triggered by either receiving or sending a frame. These states exist on both sides of the connection, just like encoding contexts!</aside>
+            <aside class="notes">All these transitions are triggered by either receiving or sending a frame. These states exist on both sides of the connection, just like encoding contexts! The difference is that when the server goes left, the client goes right, so the two structres are inverse</aside>
           </section>
           <section>
             <h2>Stream State</h2>
@@ -1093,10 +1080,6 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
 -record(stream_state, {
   stream_id = undefined :: stream_id(),
   state = idle :: stream_state_name(),
-  send_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
-  recv_window_size = ?DEFAULT_INITIAL_WINDOW_SIZE :: integer(),
-  queued_frames = [] :: [frame()],
-  incoming_frames = [] :: [frame()],
   socket = {undefined, undefined} :: {gen_tcp | ssl, port()}
 }).
 </code></pre>
@@ -1109,70 +1092,54 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
 -spec send_frame(frame(), stream_state()) -> stream_state().
 </code></pre>
           </section>
-
           <section>
-<pre><code class="erlang">
-route_frame(F={H=#frame_header{
-                  length=L,
-                  stream_id=StreamId}, _Payload},
-            S = #chatterbox_fsm_state{
-                   streams=Streams,
-                   connection=C=#connection_state{
-                                   socket=_Socket,
-                                   recv_window_size=RWS
-                                  }
-                  })
-    when H#frame_header.type == ?DATA ->
-</code></pre>
-          </section>
-
-          <section>
-<pre><code class="erlang">
-    {Stream, NewStreamsTail} = get_stream(StreamId, Streams),
-    %% Decrement connection recv_window L
-    NewRWS = RWS - L,
-    %% Decrement stream recv_window L happens in http2_stream:recv_frame
-    FinalStream = http2_stream:recv_frame(F, Stream),
-</code></pre>
-          </section>
-
-          <section>
-<pre><code class="erlang">
-    {next_state, connected, S#chatterbox_fsm_state{
-                              streams=[{StreamId,FinalStream}|NewStreamsTail],
-                              connection=C#connection_state{
-                                           recv_window_size=NewRWS
-                                          }
-                             }
-    };
-</code></pre>
-            <aside class="notes">This is just the handler for data frames coming in on the chatterbox_fsm connection level</aside>
+            <h2>routing a headers frame</h2>
           </section>
           <section>
-<pre><code data-trim contenteditable class="erlang">
-FinalStream = http2_stream:recv_frame(F, Stream),
+<pre><code class="erlang">
+route_frame(F={H=#frame_header{stream_id=StreamId}, _Payload},
+        S = #http2_connection_state{
+               connection=C=#connection_state{
+                             decode_context=DecodeContext,
+                             socket=Socket
+                             },
+               streams = Streams,
+               content_handler = Handler
+           })
+    when H#frame_header.type == ?HEADERS,
+         ?IS_FLAG(H#frame_header.flags, ?FLAG_END_HEADERS) ->
+    HeadersBin = http2_frame_headers:from_frames([F]),
+    {Headers, NewDecodeContext} = hpack:decode(HeadersBin, DecodeContext),
+    Stream = http2_stream:new(StreamId, Socket),
 </code></pre>
-            <aside class="notes">If you take one line away from the last slide, let it be this one, because it sends you...</aside>
+            <aside class="notes">
+              Create a new stream because while in the idle state, we don't have a structure for it. Pull the headers of the frame with decode, and apply this frame to the newly created stream state
+
+              This is just the handler for data frames coming in on the chatterbox_fsm connection level, we pull the existing stream out of the chatterbox state, apply a stream transition to it, and put that stream back in the state</aside>
           </section>
           <section>
             <h2>http2_stream</h2>
             <p>State Machine without a Process</p>
           </section>
           <section>
-            <h2>new/3</h2>
+            <h2>new/2</h2>
             <pre><code data-trim contenteditable class="erlang">
--spec new(stream_id(), {pos_integer(), pos_integer()}, {gen_tcp|ssl, port()}) -> stream_state().
-new(StreamId, {SendWindowSize, RecvWindowSize}, Socket) ->
+-spec new(stream_id(), {gen_tcp|ssl, port()}) -> stream_state().
+new(StreamId, Socket) ->
     #stream_state{
        stream_id=StreamId,
-       send_window_size = SendWindowSize,
-       recv_window_size = RecvWindowSize,
        socket = Socket
       }.
 </code></pre>
             <aside class="notes">
-              new/3 is the new init/1, All of the initial state, none of the process spawning
+              new/2 is the new init/1, All of the initial state, none of the process spawning
             </aside>
+          </section>
+          <section>
+<pre><code class="erlang">
+    Stream2 = http2_stream:recv_frame(F, Stream),
+</code></pre>
+            <aside class="notes">after that, back in http2_connection</aside>
           </section>
           <section>
 <pre><code class="erlang">
@@ -1184,8 +1151,7 @@ recv_frame(F={FH = #frame_header{
 when ?IS_FLAG(FH#frame_header.flags, ?FLAG_END_STREAM) ->
     State#stream_state{
       stream_id = StreamId,
-      state = half_closed_remote,
-      incoming_frames = [F]
+      state = half_closed_remote
      };
 </code></pre>
             <aside class="notes">First clause will handle transitions from idle to half_closed_remote, via HEADERS frame with END_STREAM flag set</aside>
@@ -1199,14 +1165,92 @@ recv_frame(F={_FH = #frame_header{
            State = #stream_state{state=idle}) ->
     State#stream_state{
       stream_id = StreamId,
-      state = open,
-      incoming_frames = [F]
+      state = open
      };
 </code></pre>
             <aside class="notes">This one goes to open, because it's a headers frame, but not the end of stream</aside>
           </section>
           <section>
+<pre><code class="erlang">
+    {NewConnectionState, NewStreamState} =
+        Handler:handle(
+          C#connection_state{decode_context=NewDecodeContext},
+          Headers,
+          Stream2),
+    {next_state, connected, S#http2_connection_state{
+                    connection=NewConnectionState,
+                    streams = [{StreamId, NewStreamState}|Streams]
+                  }
+    };
+</code></pre>
+          <aside class="notes">Since this is the end_stream case we're processing, we know to run the handler (which is just for static files at this point. but others could come soon... *cough* webmachine! then we put the stream back in the connection's state</aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
             <h2>Flow Control</h2>
+            <p>Applied to both the Connection as a whole and Individual Streams</p>
+            <aside class="notes">Another cool thing about http/2 is flow control. gives peers a chance to catch up with eachother.</aside>
+          </section>
+
+          <section>
+            <h2>Only Applies to Data Frames</h2>
+            <aside class="notes">Allows control frames to get in</aside>
+          </section>
+
+          <section>
+            <h2>Receiver</h2>
+            <p>Each receiver advertises how many bytes it can receive</p>
+          </section>
+
+          <section>
+            <h2>Sender</h2>
+            <p>Won't send more than the receiver advertises</p>
+          </section>
+
+          <section>
+            <h2>WINDOW_UPDATE</h2>
+            <p>
+              The window update frame is sent by the receiver to increase the number of bytes advertised. There is no decrement operation.
+            </p>
+          </section>
+
+          <section>
+            <h2>Implementing Flow Control</h2>
+            <aside class="notes">We only have to worry about it with DATA frames, but at both the connection and stream level. assume we add some state to the stream_state to keep track of the recv window size</aside>
+          </section>
+
+          <section>
+            <h4>Routing a DATA frame: connection level</h4>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L270-L297">http2_connection:route_frame</a>
+<pre><code class="erlang">
+route_frame(F={H=#frame_header{
+                  length=L,
+                  stream_id=StreamId}, _Payload},
+            S = #http2_connection_state{
+                   streams=Streams,
+                   connection=C=#connection_state{
+                                   recv_window_size=RWS
+                                  }
+                  })
+    when H#frame_header.type == ?DATA ->
+
+    %% Decrement connection recv_window L
+    NewRWS = RWS - L,
+</code></pre>
+            <aside class="notes"></aside>
+          </section>
+
+          <section>
+<pre><code class="erlang">
+    {Stream, NewStreamsTail} = get_stream(StreamId, Streams),
+    FinalStream = http2_stream:recv_frame(F, Stream),
+</code></pre>
+            <aside class="notes"></aside>
+          </section>
+          <section>
+            <h2 style="color: #b40f29";>Erlang</h2>
 <pre><code data-trim contenteditable class="erlang">
 send_frame(F={#frame_header{
                  length=L,
@@ -1223,6 +1267,9 @@ send_frame(F={#frame_header{
        send_window_size=NewSendWindow
       };
 </code></pre>
+            <aside class="notes">
+              Pattern match on data frame header length. Maintain credit balance in the FSM state for the connection level.
+            </aside>
           </section>
 
           <section>
@@ -1240,7 +1287,19 @@ send_frame(F={#frame_header{
        queued_frames=QF ++ [F]
       };
 </code></pre>
-            <aside class="notes">A couple of clauses here for handling different kinds of frames received by the http2_stream</aside>
+            <aside class="notes">If you notice here, I'm just queuing up the frames I can't receive. The spec says I MAY return a flow control error code here if I want.</aside>
+          </section>
+          <section>
+<pre><code class="erlang">
+    {next_state, connected, S#http2_connection_state{
+                              streams=[{StreamId,FinalStream}|NewStreamsTail],
+                              connection=C#connection_state{
+                                           recv_window_size=NewRWS
+                                          }
+                             }
+    };
+</code></pre>
+            <aside class="notes">put the stream back in the state, and store the new recv_window size.</aside>
           </section>
           <section>
             <h2></h2>
@@ -1258,6 +1317,18 @@ NewStream = lists:foldl(
           </section>
         </section>
 
+
+        <section>
+          <h2>Prioritization</h2>
+          <p>A client can request that a server prioritizes a certain stream over another.</p>
+          <p>It is built in a tree structure so you can create requests for stream dependencies.</p>
+          <p>Leaves in a tree can have different weights</p>
+          <h4>A server is under no obligation to honor these requests</h4>
+          <aside class="notes">
+            So I punted on it for V1; however, we didn't spawn each stream into it's own gen_fsm explicity so we could have control over priority in a future version.
+          </aside>
+        </section>
+
         <section>
           <section>
             <h2>Server Push</h2>
@@ -1271,6 +1342,7 @@ NewStream = lists:foldl(
             <p>Is this exciting for APIs? <b>Yes!</b></p>
             <aside class="notes">
               If your response contains a link, push promises are for you!
+              While I have implemented the frames needed to send these, I haven't actually done it yet.
             </aside>
           </section>
         </section>
@@ -1388,101 +1460,118 @@ handle_info({_, _Socket, &lt;&lt;?PREAMBLE,Bin/bits&gt;&gt;}, _, S) ->
           </section>
 
           <section>
-<pre><code data-trim contenteditable class="erlang">
-settings_handshake({start_frame, Bin}, S=#chatterbox_fsm_state{...}) ->
-    NewState = case Bin of
-        <<>> ->
-            S;
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L93">http2_connection:settings_handshake/2</a>
+<pre><code data-trim  class="erlang">
+settings_handshake({start_frame, Bin}, S = #http2_connection_state{
+                                              connection=#connection_state{
+                                                            socket=Socket,
+                                                            recv_settings=ServerSettings
+                                                           }
+                                      }) ->
+    {InitialSettingsFrames, InitialOtherFrames} =
+        case Bin of
+            <<>> ->
+            {[], queue:new()};
         _ ->
             OtherFrames = http2_frame:from_binary(Bin),
             {SettingsBacklog, FB} = lists:partition(
                 fun({X,_}) -> X#frame_header.type =:= ?SETTINGS end,
                 OtherFrames),
-            S#chatterbox_fsm_state{frame_backlog=FB, settings_backlog=SettingsBacklog}
+            {SettingsBacklog, queue:from_list(FB)}
     end,
-
-    %% Assemble our settings and send them
     http2_frame_settings:send(Socket, ServerSettings),
-    settings_handshake_loop(NewState, {false, false}).
+    NewState = S#http2_connection_state{
+                 frame_backlog=InitialOtherFrames
+                },
+    settings_handshake_loop({false,false}, InitialSettingsFrames, NewState).
 </code></pre>
             <aside class="notes">When we start, read all the frames we can and split them into ?SETTINGS and other</aside>
           </section>
 
           <section>
-<pre><code data-trim contenteditable class="erlang">
-settings_handshake_loop(State=#chatterbox_fsm_state{frame_backlog=FB}, {true, true}) ->
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L137-L188">settings_handshake_loop/3</a>
+<pre><code data-trim class="erlang">
+-spec settings_handshake_loop(
+        {ReceivedAck :: boolean(), ReceivedClientSettings :: boolean()},
+        [frame()],
+        #http2_connection_state{}) ->
+                      {next_state, connected, #http2_connection_state{}}.
+settings_handshake_loop({true, true}, [], State) ->
     gen_fsm:send_event(self(), backlog),
-    {next_state, connected, State#chatterbox_fsm_state{frame_backlog=lists:reverse(FB)}};
-settings_handshake_loop(State = #chatterbox_fsm_state{
-                                   settings_backlog=[{H,P}|T]
-                                  },
-                        Acc) ->
-    lager:debug("[settings_handshake] Backlogged Frame"),
-    settings_handshake_loop({H#frame_header.type, ?IS_FLAG(H#frame_header.flags, ?FLAG_ACK)},
-                            {H, P},
-                            Acc,
-                            State#chatterbox_fsm_state{settings_backlog=T});
-settings_handshake_loop(State = #chatterbox_fsm_state{
-                                   connection=#connection_state{
-                                                 socket=Socket
-                                                },
-                                   settings_backlog=[]
-                                  },
-                        Acc) ->
-    lager:debug("[settings_handshake] Incoming Frame"),
-    {H, Payload} = http2_frame:read(Socket),
-    settings_handshake_loop(
-      {H#frame_header.type,?IS_FLAG(H#frame_header.flags, ?FLAG_ACK)},
-      {H, Payload},
-      Acc,
-      State).
+    {next_state, connected, State};
 </code></pre>
-            <aside class="notes">This here is just to read frames off the backlog (from before we sent our settings frame) in case the client settings already came in, otherwise it starts reading frames off the socket</aside>
+            <aside class="notes">If we're done, transition to connected</aside>
           </section>
 
           <section>
 <pre><code data-trim contenteditable class="erlang">
-settings_handshake_loop({?SETTINGS,false},{_Header,CSettings}, {ReceivedAck,false},
-                        State = #chatterbox_fsm_state{connection=C=#connection_state{socket=S}}) ->
-    ClientSettings = http2_frame_settings:overlay(#settings{}, CSettings),
-    lager:debug(
-      "[settings_handshake] got client_settings: ~p",
-      [http2_frame_settings:format(ClientSettings)]),
-    http2_frame_settings:ack(S),
-    settings_handshake_loop(
-      State#chatterbox_fsm_state{
-        connection=C#connection_state{
-                     send_settings=ClientSettings
-                    }
-       },
-      {ReceivedAck,true}
-     );
-settings_handshake_loop({?SETTINGS,true},{_,_},{false,ReceivedClientSettings},State) ->
-    lager:debug("[settings_handshake] got server_settings ack"),
-    settings_handshake_loop(State,{true,ReceivedClientSettings});
-settings_handshake_loop(_,FrameToBacklog,Acc,State=#chatterbox_fsm_state{frame_backlog=FB}) ->
-    lager:debug("[settings_handshake] got rando frame"),
-    settings_handshake_loop(State#chatterbox_fsm_state{frame_backlog=[FrameToBacklog|FB]}, Acc).
+settings_handshake_loop(Done, [], State=#http2_connection_state{
+                                    connection=#connection_state{
+                                                  socket=Socket
+                                                 },
+                                    frame_backlog=FB
+                                   }) ->
+    Frame = {FH, _} = http2_frame:read(Socket),
+    case FH#frame_header.type of
+        ?SETTINGS ->
+            settings_handshake_loop(Done, [Frame], State);
+        _ ->
+            %% loop right back into this state after putting one on the backlog
+            settings_handshake_loop(Done, [], State#http2_connection_state{
+                                                frame_backlog=queue:in(Frame, FB)
+                                               })
+    end;
 </code></pre>
-            <aside class="notes">And here we check for settings frame with client settings, settings frame with ACK or other</aside>
+            <aside class="notes">We're done with anything we received on the initial packet, read another, and put it on the backlog. We don't really need to do this, except it lets us only write the conditional logic once</aside>
           </section>
 
           <section>
-            <h2>Connected State</h2>
+<pre><code data-trim contenteditable class="erlang">
+settings_handshake_loop({_ReceivedAck, ReceivedClientSettings},
+                       [{FH, _FPayload}|SettingsFramesTail],
+                       State)
+  when ?IS_FLAG(FH#frame_header.flags, ?FLAG_ACK) ->
+    settings_handshake_loop({true, ReceivedClientSettings},
+                            SettingsFramesTail,
+                            State);
+</code></pre>
+            <aside class="notes">If it's an ACK, flip the first bit</aside>
+          </section>
+
+          <section>
+<pre><code data-trim contenteditable class="erlang">
+settings_handshake_loop({ReceivedAck, _ReceivedClientSettings},
+                       [{_FH, FPayload}|SettingsFramesTail],
+                       State=#http2_connection_state{connection=C}) ->
+    ClientSettings = http2_frame_settings:overlay(C#connection_state.send_settings, FPayload),
+    http2_frame_settings:ack(C#connection_state.socket),
+
+    settings_handshake_loop({ReceivedAck, true},
+                            SettingsFramesTail,
+                            State#http2_connection_state{
+                              connection=C#connection_state{
+                                           send_settings=ClientSettings
+                                          }
+                              }).
+</code></pre>
+            <aside class="notes">If it's settings, but not an ack, parse the client settings and add them to the connection state</aside>
           </section>
         </section>
 
         <section>
           <section>
             <h2>Development</h2>
+            <aside class="notes">Now that we're in the connected state, let's connect</aside>
           </section>
           <section>
             <h2>Minimum Viable Response: NGHTTP2</h2>
             <p>No content handler, just a hard coded response</p>
+            <aside class="notes">Great, now what? This was enough to get through the settings handshake</aside>
           </section>
           <section>
             <h2>Firefox 37</h2>
             <p>This Slide Deck!</p>
+            <aside class="notes">Learned alot here, like how to split data into frame sized response chunks. Pages would partially render because some content was less than max frame size, and some was more.</aside>
           </section>
           <section>
             <h2>When Things Go Wrong</h2>
@@ -1524,7 +1613,7 @@ PROTOCOL_ERROR.
 </pre>
           </section>
           <section>
-<pre><code data-trim contenteditable class="erlang">
+<pre><code class="erlang">
 Frames = [
    {#frame_header{length=8,type=?HEADERS,stream_id=3},
     #headers{ block_fragment=H1 }},
@@ -1561,7 +1650,7 @@ Resp2 = http2c:get_frames(Client, 0),
           </section>
 
           <section>
-            <h2>chatterbox_fsm: continuation state</h2>
+            <h2>http2_connection: continuation state</h2>
             <ul>
               <li>Any time a HEADERS frame is received, enter CONTINUATION state</li>
               <li>In that state, only accept CONTINUATION frames from that stream</li>
@@ -1572,15 +1661,13 @@ Resp2 = http2c:get_frames(Client, 0),
           <section>
 <pre><code data-trim contenteditable class="erlang">
 continuation(start_frame,
-             S = #chatterbox_fsm_state{
+             S = #http2_connection_state{
                  connection=#connection_state{
                                socket=Socket
                               },
                  continuation_stream_id = StreamId
                 }) ->
     Frame = {FH,_} = http2_frame:read(Socket),
-    lager:debug("[continuation] [start_frame] ~p", [http2_frame:format(Frame)]),
-
     Response = case {FH#frame_header.stream_id, FH#frame_header.type} of
                    {StreamId, ?CONTINUATION} ->
                        route_frame(Frame, S);
@@ -1601,123 +1688,6 @@ Resp = http2c:get_frames(Client, 3),
 </code></pre>
           <aside class="notes">If I took out the bad frame, which I did for another test, I'd assert this instead</aside>
          </section>
-        </section>
-        <section>
-          <section>
-            <h2>chatterbox_fsm</h2>
-            <p>Routing frames in the connected state</p>
-          </section>
-
-          <section>
-<pre><code data-trim contenteditable class="erlang">
--spec route_frame(frame(), #chatterbox_fsm_state{}) -&gt;
-    {next_state, connected, #chatterbox_fsm_state{}}.
-</code></pre>
-          </section>
-
-          <section>
-            <h2>FRAMES</h2>
-            <p>The http2_frame module</p>
-          </section>
-
-          <section>
-<pre><code data-trim contenteditable class="erlang">
--spec from_binary(binary()) -&gt; [{frame_header(), payload()}].
-from_binary(Bin) -&gt;
-    from_binary(Bin, []).
-
-from_binary(&lt;&lt;&gt;&gt;, Acc) -&gt;
-    Acc;
-from_binary(Bin, Acc) -&gt;
-    {Header, PayloadBin} = read_binary_frame_header(Bin),
-    {ok, Payload, Rem} = read_binary_payload(PayloadBin, Header),
-    from_binary(Rem, [{Header, Payload}|Acc]).
-</code></pre>
-            <aside class="notes">
-              The binary passed in can be more than one frame. I haven't handled the case where a partial frame arrives. I've started that work in the client, so... soon?
-            </aside>
-          </section>
-<!--
-          <section>
-            <h2>The Front 9</h2>
-<pre>
-        +-----------------------------------------------+
-        |                 Length (24)                   |
-        +---------------+---------------+---------------+
-        |   Type (8)    |   Flags (8)   |
-        +-+-------------+---------------+-------------------------------+
-        |R|                 Stream Identifier (31)                      |
-        +=+=============================================================+
-        |                   Frame Payload (0...)                      ...
-        +---------------------------------------------------------------+
-  </pre>
-<pre><code data-trim contenteditable class="erlang">
--spec read_binary_frame_header(binary()) -&gt; {frame_header(), binary()}.
-read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/bits&gt;&gt;) -&gt;
-    Header = #frame_header{
-        length = Length,
-        type = Type,
-        flags = Flags,
-        stream_id = StreamId
-    },
-    {Header, Rem}.
-</code></pre>
-            <aside class="notes">The first 9 bytes better be a frame header. The following bytes depend on it.</aside>
-          </section>
--->
-<!--
-          <section>
-            <h2>The Following Bytes</h2>
-            <p>http2_frame behaviour</p>
-<pre><code data-trim contenteditable class="erlang">
--callback read_binary(Bin::binary(),
-                      Header::frame_header()) -&gt;
-    {ok, payload(), Remainder::binary()} | {error, term()}.
--callback to_binary(payload()) -&gt; iodata().
-</code></pre>
-            <aside class="notes">
-              These callbacks are for deserialzing payloads of specific frame types
-            </aside>
-          </section>
-
-          <section>
-<pre><code data-trim contenteditable class="erlang">
--spec read_binary_payload(binary(), frame_header()) -&gt;
-    {ok, payload(), binary()} | {error, term()}.
-read_binary_payload(Bin, Header = #frame_header{type=?DATA}) -&gt;
-    http2_frame_data:read_binary(Bin, Header);
-read_binary_payload(Socket, Header = #frame_header{type=?HEADERS}) -&gt;
-    http2_frame_headers:read_binary(Socket, Header);
-%% etc...
-</code></pre>
-            <aside class="notes"></aside>
-          </section>
--->
-
-          <section>
-            <h2>chatterbox_fsm</h2>
-          </section>
-          <section>
-<pre><code data-trim contenteditable class="erlang">
--spec route_frame(frame(), #chatterbox_fsm_state{}) -&gt;
-    {next_state, connected | continuation | closing, #chatterbox_fsm_state{}}.
-</code></pre>
-          </section>
-          <section>
-            <h2>FRAME_SIZE_ERROR</h2>
-          </section>
-          <section>
-            <h4>connection level processing</h4>
-<pre><code data-trim contenteditable class="erlang">
-route_frame({#frame_header{length=L}, _},
-            S = #chatterbox_fsm_state{
-                   connection=#connection_state{
-                                 recv_settings=#settings{max_frame_size=MFS}
-                                }})
-    when L &gt; MFS -&gt;
-    go_away(?FRAME_SIZE_ERROR, S);
-</code></pre>
-          </section>
         </section>
 
         <section>
