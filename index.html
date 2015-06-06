@@ -1483,6 +1483,7 @@ settings_handshake_loop(Done, [], State=#connection_state{
 </code></pre>
             <aside class="notes">If we're done, transition to connected. Otherwise read a frame. If it's a settings frame, it's handled by other clauses. Otherwise we'll add it to the backlog for when we transition to connected.</aside>
           </section>
+          <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L163-169">settings_handshake_loop/3</a>
 <pre><code data-trim class="erlang">
 settings_handshake_loop({_ReceivedAck, ReceivedClientSettings},
@@ -1497,6 +1498,7 @@ settings_handshake_loop({_ReceivedAck, ReceivedClientSettings},
               It's settings! Is it an ACK? then flip the first bit to true
             </aside>
           </section>
+          <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L170-L180">settings_handshake_loop/3</a>
 <pre><code data-trim class="erlang">
 settings_handshake_loop({ReceivedAck, _ReceivedClientSettings},
