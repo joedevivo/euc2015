@@ -170,11 +170,13 @@
             <h2>Keep your semantics</h2>
             <ul>
               <li>methods: GET, POST, and Friends</li>
-              <li>Headers!</li>
+              <li>Headers</li>
               <li>Requests</li>
               <li>Responses</li>
-              <li>if you did it before, it should still work</li>
             </ul>
+            <aside class="notes">
+              If you did it before, it should still work. When I talk about "messages", I mean these
+            </aside>
           </section>
           <section>
             <h2>Technically that means</h2>
@@ -189,7 +191,7 @@
           </section>
           <section>
             <h4 style="color: #b40f29";>Erlang</h4>
-            <img style="border:none;" src="./img/webmachine.png"/>
+            <img style="border:none;" src="./img/webmachine2.png"/>
             <aside class="notes">
               There's an abstraction layer where we can plug chatterbox into something like webmachine for processing REST requests
             </aside>
@@ -205,7 +207,9 @@
             <p>Uses TLS's "Next Protocol Negotiation"</p>
             <p>Or TLS's "Application Layer Protocol Negotiation"</p>
             <aside class="notes">
-              NPN was what was availble for SPDY, but it was never totally formalized. HTTP/2 supports both to be SPDY friendly, but recommends ALPN
+              NPN was what was availble for SPDY, but it was never totally formalized. HTTP/2 supports both to be SPDY friendly, but recommends ALPN,
+              Google discourages NPN and has said it has deprecated support for SPDY and NPN in favor of HTTP/2 and ALPN.
+              Firefox and Chrome have both said they'll only make HTTP/2 connections over HTTPS
             </aside>
           </section>
           <section>
@@ -311,6 +315,17 @@
               These are for really common headers. e.g. A response code of 200 is just going to be represented by "8".
               Sometimes there's no value, but the header name is what we're saving here, so 15+value is always "accept-charset", Indexes 1-61, Sometimes value, sometimes not. They're all hardcoded and are constant.
             </aside>
+          </section>
+
+          <section>
+            <h2>psuedo-headers</h2>
+            <ul>
+              <li>:method</li>
+              <li>:path</li>
+              <li>:scheme</li>
+              <li>:status</li>
+            </ul>
+            <aside class="notes">While we treat these as headers in the implementation, semantically they're not</aside>
           </section>
 
           <section>
@@ -744,8 +759,9 @@ DynamicTable = [
           <section>
             <h2>Streams</h2>
             <p>There's one connection, streams are logical abstractions across it</p>
-            <p>They have unique identifier s</p>
-            <p>Section 5.1.1 says client initiated stream ids are odd, server's are even</p>
+            <p>They have unique identifiers</p>
+            <p>At most one Request / one Response per stream</p>
+            <p>client initiated stream ids are always odd</p>
           </section>
           <section>
             <h2>Stream 0</h2>
@@ -798,7 +814,8 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           </section>
           <section>
             <h2>Jargon Alert!</h2>
-            <p>A <b>connection</b> has multiple <b>streams</b> which can accept multiple <b>frames</b> in order</p>
+            <p>A <b>connection</b> has multiple <b>streams</b> each of which can accept a single <b>request message</b>, and send a single <b>response message</b>, each message consisting of multiple <b>frames</b> in order</p>
+            <aside class="notes">This is the first time I've mentioned request/response messages. Think of these as HTTP/1 semantics.
           </section>
           <section>
             <h2>Handling</h2>
@@ -924,7 +941,7 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
 
         <section>
           <section>
-            <h2>Frame Types</h2>
+            <h2>Stream Level Frame Types</h2>
           </section>
           <section>
             <h2>HEADERS</h2>
@@ -949,6 +966,25 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
           <section>
             <h2>RST_STREAM</h2>
             <p>Sent to give up on a stream</p>
+          </section>
+
+          <section>
+            <h2>A Sample Request or Response Message</h2>
+            <pre>
+              +-------------------------+
+              |HEADERS                  |
+              +-------------------------+
+              |CONTINUATION             |
+              +-------------------------+
+              |CONTINUATION  END_HEADERS|
+              +-------------------------+
+              |DATA                     |
+              +-------------------------+
+              |DATA                     |
+              +-------------------------+
+              |DATA          END_STREAM |
+              +-------------------------+
+            </pre>
           </section>
         </section>
 
@@ -1326,7 +1362,9 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
             <h2>Server Push</h2>
           </section>
           <section>
-            <h2>Guessing about requests that will come</h2>
+            <h2>Multiple Responses per Request</h2>
+            <p class="fragment">Each response on a new stream</p>
+            <p class="fragment">Server initiated streams have even identifiers</p>
           </section>
           <section>
             <h2>Static Content</h2>
@@ -1336,6 +1374,24 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
               If your response contains a link, push promises are for you!
               While I have implemented the frames needed to send these, I haven't actually done it yet.
             </aside>
+          </section>
+          <section>
+            <h2>A Sample Push Message</h2>
+            <pre>
+              +-------------------------+
+              |PUSH_PROMISE             |
+              +-------------------------+
+              |CONTINUATION             |
+              +-------------------------+
+              |CONTINUATION  END_HEADERS|
+              +-------------------------+
+              |DATA                     |
+              +-------------------------+
+              |DATA                     |
+              +-------------------------+
+              |DATA          END_STREAM |
+              +-------------------------+
+            </pre>
           </section>
         </section>
 
@@ -1544,7 +1600,7 @@ settings_handshake_loop({ReceivedAck, _ReceivedClientSettings},
           <section>
             <h2>http2c APIs</h2>
             <ul>
-              <li>High Level - Request/Response</li>
+              <li>High Level - Request/Response Message Level (Keep your semantics!)</li>
               <li>Mid Level - HTTP/2 Frames</li>
               <li>Low Level - Binary</li>
             </ul>
@@ -1671,6 +1727,7 @@ Stream0 = http2c:get_frames(Client, 0),
               <li><a href="http://http2.github.io/faq/">HTTP/2 Official FAQ</a></li>
               <li><a href="http://daniel.haxx.se/http2/">HTTP2 Explained - Daniel Stenberg</a></li>
               <li><a href="http://chimera.labs.oreilly.com/books/1230000000545/ch09.html">High Performance Browser Networking  - Ilya Grigorik</a></li>
+              <li><a href="http://www.oreilly.com/webops-perf/free/HTTP2-high-perf-browser-networking.csp">And the HTTP/2 add on</a></li>
             </ul>
           </section>
           <section>
