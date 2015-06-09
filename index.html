@@ -248,22 +248,6 @@
             <aside class="notes"></aside>
           </section>
 
-          <section>
-            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/headers.erl#L15-L27">headers.erl:15-27</a>
-<pre><code data-trim class="erlang">
--type header_name() :: binary().
--type header_value():: binary().
--define(DYNAMIC_TABLE_MIN_INDEX, 62).
-
--record(dynamic_table, {
-    table = [] :: [{pos_integer(), header_name(), header_value()}],
-    max_size = 4096 :: pos_integer(),
-    size = 0 :: non_neg_integer()
-    }).
--type dynamic_table() :: #dynamic_table{}.
-</code></pre>
-          </section>
-
           <section data-background-transition="fade">
             <h2>The Static Table</h2>
 <pre>                    +-------+--------------------+---------------+
@@ -333,6 +317,32 @@
           </section>
 
           <section>
+            <h2>The Dynamic Table</h2>
+            <p>Add your own!</p>
+            <p>Indexes 62+</p>
+            <p>
+              Bounded by size in HTTP/2 connection settings as a security precaution
+            </p>
+            <aside class="notes">Take a bite out of CRIME</aside>
+          </section>
+
+          <section>
+            <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/headers.erl#L15-L27">headers.erl:15-27</a>
+<pre><code data-trim class="erlang">
+-type header_name() :: binary().
+-type header_value():: binary().
+-define(DYNAMIC_TABLE_MIN_INDEX, 62).
+
+-record(dynamic_table, {
+    table = [] :: [{pos_integer(), header_name(), header_value()}],
+    max_size = 4096 :: pos_integer(),
+    size = 0 :: non_neg_integer()
+    }).
+-type dynamic_table() :: #dynamic_table{}.
+</code></pre>
+          </section>
+
+          <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/hpack.erl">hpack.erl</a>
 <pre><code data-trim class="erlang">
 -spec encode([{binary(), binary()}], encode_context()) -> {binary(), encode_context()}.
@@ -349,16 +359,6 @@ StaticTable = hpack:new_encode_context(),
 StaticTable = hpack:new_decode_context(),
 {[{<<":status">>, <<"200">>}], StaticTable} = decode(HeaderBin, StaticTable).
 </code></pre>
-          </section>
-
-          <section>
-            <h2>The Dynamic Table</h2>
-            <p>Add your own!</p>
-            <p>Indexes 62+</p>
-            <p>
-              Bounded by size in HTTP/2 connection settings as a security precaution
-            </p>
-            <aside class="notes">Take a bite out of CRIME</aside>
           </section>
 
           <section>
@@ -554,7 +554,7 @@ decode(<<2#001:3,_/bits>>=B, HeaderAcc, Context) ->
           <section>
             <h2>Examples</h2>
             <p>
-              There are tons of cool examples in <a href="http://tools.ietf.org/html/rfc7541#appendix-C">HPACK: Appendix C</a>. They're so good that I turned them into <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/test/hpack_tests.erl#L61-L189">EUnit tests</a>
+              There are tons of cool examples in <a href="http://tools.ietf.org/html/rfc7541#appendix-C">HPACK: Appendix C</a></p><p>They're so good that I turned them into <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/test/hpack_tests.erl#L61-L189">EUnit tests</a>
             </p>
           </section>
         </section>
@@ -754,7 +754,8 @@ DynamicTable = [
         <!-- Multiplexing -->
         <section>
           <section>
-            <h2>Multiplexing: Pipelining done right</h2>
+            <h2>Multiplexing</h2>
+            <h4>Pipelining done right</h4>
           </section>
           <section>
             <h2>Streams</h2>
@@ -765,12 +766,13 @@ DynamicTable = [
           </section>
           <section>
             <h2>Stream 0</h2>
-            <p>Stream 0 is the meta stream. Frames sent to it apply to the entire connection</p>
+            <p>Stream 0 is the meta stream.</p>
+            <p>Frames sent to it apply to the entire connection</p>
             <p>Some frame types (e.g. Data) can't be sent to stream 0.</p>
           </section>
           <section>
             <h2>Frames</h2>
-            <p>A frame's stream identifier determines which multiplexed stream it belongs to</p>
+            <p>A frame's stream identifier determines <br/>which multiplexed stream it belongs to</p>
           </section>
           <section>
             <h2>One Stream Id</h2>
@@ -779,7 +781,7 @@ DynamicTable = [
           </section>
           <section>
             <h2>Order?</h2>
-            <p>Yes, because the header context is a piece of state, all those HPACK indexes would get out of sync if the client and server processed things in a different order</p>
+            <aside class="notes">header context is a piece of state, all those HPACK indexes would get out of sync if the client and server processed things in a different order</aside>
           </section>
           <section>
             <h2>Order Matters</h2>
@@ -815,7 +817,7 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           <section>
             <h2>Jargon Alert!</h2>
             <p>A <b>connection</b> has multiple <b>streams</b> each of which can accept a single <b>request message</b>, and send a single <b>response message</b>, each message consisting of multiple <b>frames</b> in order</p>
-            <aside class="notes">This is the first time I've mentioned request/response messages. Think of these as HTTP/1 semantics.
+            <aside class="notes">Messages are your HTTP/1 semantics.
           </section>
           <section>
             <h2>Handling</h2>
@@ -823,34 +825,34 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           </section>
           <section>
             <pre>
-                             +--------+
-                     send PP |        | recv PP
-                    ,--------|  idle  |--------.
-                   /         |        |         \
-                  v          +--------+          v
-           +----------+          |           +----------+
-           |          |          | send H /  |          |
-    ,------| reserved |          | recv H    | reserved |------.
-    |      | (local)  |          |           | (remote) |      |
-    |      +----------+          v           +----------+      |
-    |          |             +--------+             |          |
-    |          |     recv ES |        | send ES     |          |
-    |   send H |     ,-------|  open  |-------.     | recv H   |
-    |          |    /        |        |        \    |          |
-    |          v   v         +--------+         v   v          |
-    |      +----------+          |           +----------+      |
-    |      |   half   |          |           |   half   |      |
-    |      |  closed  |          | send R /  |  closed  |      |
-    |      | (remote) |          | recv R    | (local)  |      |
-    |      +----------+          |           +----------+      |
-    |           |                |                 |           |
-    |           | send ES /      |       recv ES / |           |
-    |           | send R /       v        send R / |           |
-    |           | recv R     +--------+   recv R   |           |
-    | send R /  `----------->|        |&lt;-----------'  send R / |
-    | recv R                 | closed |               recv R   |
-    `----------------------->|        |&lt;----------------------'
-                             +--------+
+                                     +--------+
+                             send PP |        | recv PP
+                            ,--------|  idle  |--------.
+                           /         |        |         \
+                          v          +--------+          v
+                   +----------+          |           +----------+
+                   |          |          | send H /  |          |
+            ,------| reserved |          | recv H    | reserved |------.
+            |      | (local)  |          |           | (remote) |      |
+            |      +----------+          v           +----------+      |
+            |          |             +--------+             |          |
+            |          |     recv ES |        | send ES     |          |
+            |   send H |     ,-------|  open  |-------.     | recv H   |
+            |          |    /        |        |        \    |          |
+            |          v   v         +--------+         v   v          |
+            |      +----------+          |           +----------+      |
+            |      |   half   |          |           |   half   |      |
+            |      |  closed  |          | send R /  |  closed  |      |
+            |      | (remote) |          | recv R    | (local)  |      |
+            |      +----------+          |           +----------+      |
+            |           |                |                 |           |
+            |           | send ES /      |       recv ES / |           |
+            |           | send R /       v        send R / |           |
+            |           | recv R     +--------+   recv R   |           |
+            | send R /  `----------->|        |&lt;-----------'  send R / |
+            | recv R                 | closed |               recv R   |
+            `----------------------->|        |&lt;----------------------'
+                                     +--------+
             </pre>
           <aside class="notes">
             Don't get your hopes up to high. I got excited too when I thought it was an FSM at first
@@ -863,15 +865,15 @@ Context  |<--|     Headers     |<-------------|  Context  |<--| Headers  | |
           <section>
             <h2>Frames</h2>
             <pre>
-    +-----------------------------------------------+
-    |                 Length (24)                   |
-    +---------------+---------------+---------------+
-    |   Type (8)    |   Flags (8)   |
-    +-+-------------+---------------+-------------------------------+
-    |R|                 Stream Identifier (31)                      |
-    +=+=============================================================+
-    |                   Frame Payload (0...)                      ...
-    +---------------------------------------------------------------+
+        +-----------------------------------------------+
+        |                 Length (24)                   |
+        +---------------+---------------+---------------+
+        |   Type (8)    |   Flags (8)   |
+        +-+-------------+---------------+-------------------------------+
+        |R|                 Stream Identifier (31)                      |
+        +=+=============================================================+
+        |                   Frame Payload (0...)                      ...
+        +---------------------------------------------------------------+
             </pre>
           </section>
           <section>
@@ -948,12 +950,8 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
             <p>Request and Response Headers start with these</p>
           </section>
           <section>
-            <h2>PUSH_PROMISE</h2>
-            <p>Headers for a response for which there was no request</p>
-          </section>
-          <section>
             <h2>CONTINUATION</h2>
-            <p>PUSH_PROMISE and HEADERS are the first frame of headers, but if they're too big to fit in one frame, the rest comes over in CONTINUATION frames. When a frame comes over with the END_HEADERS flag set, we know it's over</p>
+            <p>HEADERS are the first frame of headers, but if they're too big to fit in one frame, the rest comes over in CONTINUATION frames. When a frame comes over with the END_HEADERS flag set, we know it's over</p>
           </section>
           <section>
             <h2>DATA</h2>
@@ -969,21 +967,21 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
           </section>
 
           <section>
-            <h2>A Sample Request or Response Message</h2>
+            <h2>A Sample Message</h2>
             <pre>
-              +-------------------------+
-              |HEADERS                  |
-              +-------------------------+
-              |CONTINUATION             |
-              +-------------------------+
-              |CONTINUATION  END_HEADERS|
-              +-------------------------+
-              |DATA                     |
-              +-------------------------+
-              |DATA                     |
-              +-------------------------+
-              |DATA          END_STREAM |
-              +-------------------------+
+                              +-------------------------+
+                              |HEADERS                  |
+                              +-------------------------+
+                              |CONTINUATION             |
+                              +-------------------------+
+                              |CONTINUATION  END_HEADERS|
+                              +-------------------------+
+                              |DATA                     |
+                              +-------------------------+
+                              |DATA                     |
+                              +-------------------------+
+                              |DATA          END_STREAM |
+                              +-------------------------+
             </pre>
           </section>
         </section>
@@ -1028,34 +1026,34 @@ route_frame({#frame_header{length=L}, _},
           </section>
           <section>
             <pre>
-                             +--------+
-                     send PP |        | recv PP
-                    ,--------|  idle  |--------.
-                   /         |        |         \
-                  v          +--------+          v
-           +----------+          |           +----------+
-           |          |          | send H /  |          |
-    ,------| reserved |          | recv H    | reserved |------.
-    |      | (local)  |          |           | (remote) |      |
-    |      +----------+          v           +----------+      |
-    |          |             +--------+             |          |
-    |          |     recv ES |        | send ES     |          |
-    |   send H |     ,-------|  open  |-------.     | recv H   |
-    |          |    /        |        |        \    |          |
-    |          v   v         +--------+         v   v          |
-    |      +----------+          |           +----------+      |
-    |      |   half   |          |           |   half   |      |
-    |      |  closed  |          | send R /  |  closed  |      |
-    |      | (remote) |          | recv R    | (local)  |      |
-    |      +----------+          |           +----------+      |
-    |           |                |                 |           |
-    |           | send ES /      |       recv ES / |           |
-    |           | send R /       v        send R / |           |
-    |           | recv R     +--------+   recv R   |           |
-    | send R /  `----------->|        |&lt;-----------'  send R / |
-    | recv R                 | closed |               recv R   |
-    `----------------------->|        |&lt;----------------------'
-                             +--------+
+                                     +--------+
+                             send PP |        | recv PP
+                            ,--------|  idle  |--------.
+                           /         |        |         \
+                          v          +--------+          v
+                   +----------+          |           +----------+
+                   |          |          | send H /  |          |
+            ,------| reserved |          | recv H    | reserved |------.
+            |      | (local)  |          |           | (remote) |      |
+            |      +----------+          v           +----------+      |
+            |          |             +--------+             |          |
+            |          |     recv ES |        | send ES     |          |
+            |   send H |     ,-------|  open  |-------.     | recv H   |
+            |          |    /        |        |        \    |          |
+            |          v   v         +--------+         v   v          |
+            |      +----------+          |           +----------+      |
+            |      |   half   |          |           |   half   |      |
+            |      |  closed  |          | send R /  |  closed  |      |
+            |      | (remote) |          | recv R    | (local)  |      |
+            |      +----------+          |           +----------+      |
+            |           |                |                 |           |
+            |           | send ES /      |       recv ES / |           |
+            |           | send R /       v        send R / |           |
+            |           | recv R     +--------+   recv R   |           |
+            | send R /  `----------->|        |&lt;-----------'  send R / |
+            | recv R                 | closed |               recv R   |
+            `----------------------->|        |&lt;----------------------'
+                                     +--------+
             </pre>
             <aside class="notes">All these transitions are triggered by either receiving or sending a frame. These states exist on both sides of the connection, just like encoding contexts! The difference is that when the server goes left, the client goes right, so the two structres are inverse</aside>
           </section>
@@ -1223,15 +1221,12 @@ recv_frame(F={_FH = #frame_header{
           <section>
             <h4>Sending Response Data</h4>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/chatterbox_static_content_handler.erl#L43-L60">chatterbox_static_content_handler</a>
-<pre><code class="erlang">
+<pre><code style="max-height:100%;" class="erlang">
             Ext = filename:extension(File),
             MimeType = case Ext of
                 ".js" -> <<"text/javascript">>;
                 ".html" -> <<"text/html">>;
                 ".css" -> <<"text/css">>;
-                ".scss" -> <<"text/css">>;
-                ".woff" -> <<"application/font-woff">>;
-                ".ttf" -> <<"application/font-snft">>;
                 _ -> <<"unknown">>
             end,
             {ok, Data} = file:read_file(File),
@@ -1301,7 +1296,6 @@ send_frame(F={#frame_header{
             <aside class="notes">If you notice here, I'm just queuing up the frames I can't send.</aside>
           </section>
           <section>
-            <h2>What to do with those queued frames?</h2>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_stream.erl#L157-L181">http2_stream:recv_frame(?WINDOW_UPDATE)</a>
 <pre><code class="erlang" style="max-height:100%">
 %% needs a WINDOW_UPDATE clause badly
@@ -1327,7 +1321,7 @@ recv_frame({#frame_header{type=?WINDOW_UPDATE, stream_id=StreamId},
       {NewState, ConnectionState},
       QF);
 </code></pre>
-            <aside class="notes">This only applies to the Stream!</aside>
+            <aside class="notes">Queued frames? This only applies to the Stream!</aside>
           </section>
 
           <section>
@@ -1374,6 +1368,14 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
               If your response contains a link, push promises are for you!
               While I have implemented the frames needed to send these, I haven't actually done it yet.
             </aside>
+          </section>
+          <section>
+            <h2>PUSH_PROMISE</h2>
+            <p>Headers for a response for which there was no request</p>
+          </section>
+          <section>
+            <h2>CONTINUATION</h2>
+            <p>Can also follow a PUSH_PROMISE</p>
           </section>
           <section>
             <h2>A Sample Push Message</h2>
