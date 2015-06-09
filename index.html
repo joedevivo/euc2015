@@ -958,10 +958,6 @@ read_binary_frame_header(&lt;&lt;Length:24,Type:8,Flags:8,_R:1,StreamId:31,Rem/b
             <p>Request and Response Bodies are made of these</p>
           </section>
           <section>
-            <h2>PRIORITY</h2>
-            <p>Sent to change a stream's priority</p>
-          </section>
-          <section>
             <h2>RST_STREAM</h2>
             <p>Sent to give up on a stream</p>
           </section>
@@ -1071,8 +1067,10 @@ route_frame({#frame_header{length=L}, _},
             <h2>Stream Transitions</h2>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_stream.erl#L33-L230">http2_stream.erl</a>
 <pre><code data-trim class="erlang">
--spec recv_frame(frame(), stream_state()) -> stream_state().
--spec send_frame(frame(), stream_state()) -> stream_state().
+-spec recv_frame(frame(), {stream_state(), connection_state()}) ->
+                                      {stream_state(), connection_state()}.
+-spec send_frame(frame(), {stream_state(), connection_state()}) ->
+                                      {stream_state(), connection_state()}.
 </code></pre>
           </section>
           <section>
@@ -1094,7 +1092,7 @@ route_frame(F={H=#frame_header{stream_id=StreamId}, _Payload},
     lager:debug("Received HEADERS Frame for Stream ~p", [StreamId]),
     HeadersBin = http2_frame_headers:from_frames([F]),
     {Headers, NewDecodeContext} = hpack:decode(HeadersBin, DecodeContext),
-    Stream = http2_stream:new(StreamId, {SendWindowSize, RecvWindowSize}),
+    Stream = http2_stream:new(StreamId),
 </code></pre>
             <aside class="notes">
               Create a new stream because while in the idle state, we don't have a structure for it. Pull the headers of the frame with decode, and apply this frame to the newly created stream state
@@ -1106,7 +1104,7 @@ route_frame(F={H=#frame_header{stream_id=StreamId}, _Payload},
             <p>State Machine without a Process</p>
           </section>
           <section>
-            <h2>new/2</h2>
+            <h2>new/1</h2>
             <pre><code data-trim class="erlang">
 -spec new(stream_id()) -> stream_state().
 new(StreamId) ->
@@ -1173,9 +1171,6 @@ recv_frame(F={_FH = #frame_header{
           NextConnectionState,
           Headers,
           Stream2),
-
-    %% send it this headers frame which should transition it into the open state
-    %% Add that pid to the set of streams in our state
     {next_state, connected, NewConnectionState#connection_state{
                               streams = [{StreamId, NewStreamState}|Streams]
                              }};
@@ -1208,6 +1203,7 @@ recv_frame(F={_FH = #frame_header{
 
           <section>
             <h2>WINDOW_UPDATE</h2>
+            <h4>NEW FRAME TYPE!</h4>
             <p>
               The window update frame is sent by the receiver to increase the number of bytes advertised. There is no decrement operation.
             </p>
@@ -1215,7 +1211,8 @@ recv_frame(F={_FH = #frame_header{
           </section>
           <section>
             <h2>Implementing Flow Control</h2>
-            <aside class="notes">We only have to worry about it with DATA frames, but at both the connection and stream level. assume we add some state to the stream_state to keep track of the recv window size</aside>
+            <aside class="notes">
+              We only have to worry about it with DATA frames, but at both the connection and stream level. assume we add some state to the stream_state to keep track of the recv window size</aside>
           </section>
 
           <section>
@@ -1246,11 +1243,11 @@ recv_frame(F={_FH = #frame_header{
 <pre><code class="erlang">
       %% This is a baller fold right here. Fauxnite State Machine at its finest.
       lists:foldl(
-      fun(Frame, State) ->
+          fun(Frame, State) ->
               http2_stream:send_frame(Frame, State)
-      end,
-      {Stream, NewConnectionState},
-      Frames).
+          end,
+          {Stream, NewConnectionState},
+          Frames).
 </code></pre>
             <aside class="notes"></aside>
           </section>
@@ -1315,7 +1312,6 @@ recv_frame({#frame_header{type=?WINDOW_UPDATE, stream_id=StreamId},
                  send_window_size=NewSendWindow,
                  queued_frames=[]
                 },
-    lager:info("Stream ~p send window now: ~p", [StreamId, NewSendWindow]),
     lists:foldl(
       fun(Frame, StreamAndConn) -> send_frame(Frame, StreamAndConn) end,
       {NewState, ConnectionState},
@@ -1339,16 +1335,22 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
             <aside class="notes">Updating it for the connection is easier. But there's still a TODO here, have you guessed it? If frames weren't being sent because of the connection window being too small, the streams that stalled need to be reminded to wake up and start sending</aside>
           </section>
         </section>
-
         <section>
-          <h2>Prioritization</h2>
-          <p>A client can request that a server prioritizes a certain stream over another.</p>
-          <p>It is built in a tree structure so you can create requests for stream dependencies.</p>
-          <p>Leaves in a tree can have different weights</p>
-          <h4>A server is under no obligation to honor these requests</h4>
-          <aside class="notes">
-            So I punted on it for V1; however, we didn't spawn each stream into it's own gen_fsm explicity so we could have control over priority in a future version.
-          </aside>
+          <section>
+            <h2>Prioritization</h2>
+            <p>A client can request that a server prioritizes a certain stream over another.</p>
+            <p>It is built in a tree structure so you can create requests for stream dependencies.</p>
+            <p>Leaves in a tree can have different weights</p>
+            <h4>A server is under no obligation to honor these requests</h4>
+            <aside class="notes">
+              So I punted on it for V1; however, we didn't spawn each stream into it's own gen_fsm explicity so we could have control over priority in a future version.
+            </aside>
+          </section>
+          <section>
+            <h2>PRIORITY</h2>
+            <h4>NEW FRAME TYPE</h4>
+            <p>Sent to change a stream's priority</p>
+          </section>
         </section>
 
         <section>
@@ -1371,7 +1373,9 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
           </section>
           <section>
             <h2>PUSH_PROMISE</h2>
-            <p>Headers for a response for which there was no request</p>
+            <h4>NEW FRAME TYPE<h4>
+            <p>Headers for a Server Push message</p>
+            <!--p> and the choice of a new generation</p-->
           </section>
           <section>
             <h2>CONTINUATION</h2>
@@ -1514,7 +1518,9 @@ settings_handshake({start_frame, <<>>},
                 },
     settings_handshake_loop({false,false}, [], NewState).
 </code></pre>
-            <aside class="notes">We're going to ignore the case where more than the preamble came over in the first packet, but it's handled in the code. Trust me.</aside>
+            <aside class="notes">
+              We're going to ignore the case where more than the preamble came over in the first packet, but it's handled in the code. Trust me.
+            </aside>
           </section>
 
           <section>
@@ -1539,7 +1545,9 @@ settings_handshake_loop(Done, [], State=#connection_state{
                                                })
     end;
 </code></pre>
-            <aside class="notes">If we're done, transition to connected. Otherwise read a frame. If it's a settings frame, it's handled by other clauses. Otherwise we'll add it to the backlog for when we transition to connected.</aside>
+            <aside class="notes">
+              If we're done, transition to connected. Otherwise read a frame. If it's a settings frame, it's handled by other clauses. Otherwise we'll add it to the backlog for when we transition to connected.
+            </aside>
           </section>
           <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L163-169">settings_handshake_loop/3</a>
@@ -1632,6 +1640,19 @@ PROTOCOL_ERROR.
 </pre>
           </section>
           <section>
+            <h2>TL;DR</h2>
+            <p>Once a HEADERS frame is received on Stream X, only accept CONTINUATION frames on Stream X until one comes over with the END_HEADERS flag set</p>
+            <p>If any other frame type, or frames from any other Stream come over, send a GOAWAY frame with a PROTOCOL_ERROR code</p>
+          </section>
+
+          <section>
+            <h2>Joe DeVivo</h2>
+            <img src="./img/joe.png" height="300"/>
+            <p class="fragment">Reading RFCs so you don't have to, since 2015</p>
+            <aside class="notes">This has been another episode of..</aside>
+          </section>
+
+          <section>
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/common_test/header_continuation_SUITE.erl#L75-80">header_continuation_SUITE</a>
 <pre><code style="max-height:100%;" class="erlang">
 Frames = [
@@ -1716,7 +1737,7 @@ Stream0 = http2c:get_frames(Client, 0),
 
         <section>
           <h2>THANKS!</h2>
-          <p>p.s. there are a bunch of references later after this</p>
+          <p>p.s. there are a bunch of references later, keep reading!</p>
           <p><a href="http://github.com/joedevivo/chatterbox">Here's the code again!</a></p>
         </section>
         <section>
