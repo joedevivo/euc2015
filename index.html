@@ -52,6 +52,8 @@
         <section>
           <h2>Chatterbox</h2>
           <p><a href="http://github.com/joedevivo/chatterbox">Here's the code!</a></p>
+          <p><a href="http://joedevivo.com/euc2015">Here's this slide deck! joedevivo.com/euc2015</a></p>
+
         </section>
 
         <section>
@@ -313,7 +315,9 @@
           </section>
 
           <section>
-            <h2>Initial Context is the Static Table</h2>
+            <h2>Initial Context</h2>
+            <h2>is</h2>
+            <h2>the Static Table</h2>
           </section>
 
           <section>
@@ -1089,7 +1093,6 @@ route_frame(F={H=#frame_header{stream_id=StreamId}, _Payload},
            })
     when H#frame_header.type == ?HEADERS,
          ?IS_FLAG(H#frame_header.flags, ?FLAG_END_HEADERS) ->
-    lager:debug("Received HEADERS Frame for Stream ~p", [StreamId]),
     HeadersBin = http2_frame_headers:from_frames([F]),
     {Headers, NewDecodeContext} = hpack:decode(HeadersBin, DecodeContext),
     Stream = http2_stream:new(StreamId),
@@ -1120,10 +1123,12 @@ new(StreamId) ->
             <a href="https://github.com/joedevivo/chatterbox/blob/euc2015/src/http2_connection.erl#L257-L273">http2_connection:route_frame</a>
 <pre><code class="erlang">
     {Stream2, NextConnectionState} =
-        http2_stream:recv_frame(F, {Stream,
-                                    S#connection_state{
-                                                        decode_context=NewDecodeContext
-                                                     }}),
+        http2_stream:recv_frame(
+                F,
+                {Stream,
+                 S#connection_state{
+                                     decode_context=NewDecodeContext
+                                  }}),
 
 </code></pre>
             <aside class="notes">after that, back in http2_connection</aside>
@@ -1329,7 +1334,6 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
                    send_window_size=SWS
                   })
     when H#frame_header.type == ?WINDOW_UPDATE ->
-    lager:debug("Stream 0 Window Update: ~p", [WSI]),
     {next_state, connected, S#connection_state{send_window_size=SWS+WSI}};
 </code></pre>
             <aside class="notes">Updating it for the connection is easier. But there's still a TODO here, have you guessed it? If frames weren't being sent because of the connection window being too small, the streams that stalled need to be reminded to wake up and start sending</aside>
@@ -1361,6 +1365,7 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
             <h2>Multiple Responses per Request</h2>
             <p class="fragment">Each response on a new stream</p>
             <p class="fragment">Server initiated streams have even identifiers</p>
+            <p class="fragment">What <i>even</i> are stream identifiers?</p>
           </section>
           <section>
             <h2>Static Content</h2>
@@ -1384,19 +1389,7 @@ route_frame({H=#frame_header{stream_id=0}, #window_update{window_size_increment=
           <section>
             <h2>A Sample Push Message</h2>
             <pre>
-              +-------------------------+
-              |PUSH_PROMISE             |
-              +-------------------------+
-              |CONTINUATION             |
-              +-------------------------+
-              |CONTINUATION  END_HEADERS|
-              +-------------------------+
-              |DATA                     |
-              +-------------------------+
-              |DATA                     |
-              +-------------------------+
-              |DATA          END_STREAM |
-              +-------------------------+
+                             +-------------------------+
             </pre>
           </section>
         </section>
@@ -1692,7 +1685,7 @@ Resp2 = http2c:get_frames(Client, 0),
           </section>
 
           <section>
-            <h2>http2_connection: continuation state</h2>
+            <h4>http2_connection: </h4><h4>continuation state</h4>
             <ul>
               <li>Any time a HEADERS frame is received, enter CONTINUATION state</li>
               <li>In that state, only accept CONTINUATION frames from that stream</li>
